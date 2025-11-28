@@ -1,0 +1,212 @@
+.
+├── README.md
+├── archive
+│   └── notebooks
+│       ├── Spike-Timing Dynamics of Neurona Groups.ipynb
+│       ├── initial_analysis copy.ipynb
+│       ├── simple_analysis.py
+│       ├── simple_model_brian2 copy.ipynb
+│       ├── simple_model_spiking_neurons_generalize_dt copy.ipynb
+│       ├── simple_model_spiking_neurons_modified.ipynb
+│       ├── simplest_model_brian2.ipynb
+│       ├── simplest_model_brian2_modified_optim.ipynb
+│       ├── simplest_model_brian2_modified_optim2.ipynb
+│       ├── two_izhikevich_populations copy 2.ipynb
+│       └── two_izhikevich_populations copy.ipynb
+├── clustering_kmeans_th_0.0.png
+├── clustering_main_th_0.0.png
+├── clustering_optimization_th_0.0.png
+├── configs
+├── context.md
+├── correlations_th_0.0.png
+├── critical_k_plot1.png
+├── critical_k_plot2.png
+├── critical_k_plot3.png
+├── data
+│   ├── NeuroscienceMeeting_02_06_2025_AAA_CEG.pdf
+│   ├── exports
+│   │   └── avg_distributions_filtered
+│   ├── processed
+│   │   ├── atlas
+│   │   └── roi_files
+│   └── raw
+│       ├── Toni_2025-08-06
+│       ├── Toni_2025-08-06-20250808T103646Z-1-001.zip
+│       ├── atlas_cg_3d5_names.txt
+│       ├── rat_delays_fibers_0.0
+│       ├── rat_delays_fibers_0.0.tar.gz
+│       ├── rat_delays_fibers_0.2
+│       ├── rat_delays_fibers_0.2.tar.gz
+│       ├── rat_delays_fibers_0.4
+│       ├── rat_delays_fibers_0.4.tar.gz
+│       ├── rat_delays_fibers_0.6
+│       ├── rat_delays_fibers_0.6.tar.gz
+│       ├── rat_delays_fibers_0.8
+│       ├── rat_delays_fibers_0.8.tar.gz
+│       ├── roi_files_th-0.0_R01_b20_r_Fit_Histogram_Tau_all_fibers.7z
+│       └── th-0.0_R01_b20_r_Fit_Histogram_Tau_all_fibers.zip
+├── docs
+│   └── pdfs
+│       ├── 1-s2.0-S0896627310010755-main.pdf
+│       ├── 1-s2.0-S0896627312008112-main.pdf
+│       ├── 1-s2.0-S1364661313002106-main.pdf
+│       ├── 1207.full_.pdf
+│       ├── 2995.full.pdf
+│       ├── 3366.full.pdf
+│       ├── 7KWUPAiTR_ePPQqVoLmfIw.pdf
+│       ├── 8168.full.pdf
+│       ├── BarlowSparsity1972.pdf
+│       ├── Borgers-Neural Computation-2005.pdf
+│       ├── C2f58C7HT96Je2YPA-MO0g.pdf
+│       ├── Christoph von der Malsburg.pdf
+│       ├── CjgG9tHaSH2vRmWTcDHf1Q.pdf
+│       ├── Distributed Fading Memory for Stimulus Properties.pdf
+│       ├── FEFV4_Science.pdf
+│       ├── Izhikevich-neuronal-interaction.pdf
+│       ├── MainText_wSuppFigs.pdf
+│       ├── P160_mmt12.pdf
+│       ├── PhD Progress Summary - July 2025.pdf
+│       ├── Salazar-et-al.-2012.pdf
+│       ├── Science12.pdf
+│       ├── Synchronization_in_Networks_of_Excitatory_and_Inhi.pdf
+│       ├── The_importance_of_being_hierarchical-1.pdf
+│       ├── aWIaIIV3T3OWH62Tkd1JIg.pdf
+│       ├── dsn.pdf
+│       ├── ermentrout-kopell-1998-fine-structure-of-neural-spiking-and-synchronization-in-the-presence-of-conduction-delays.pdf
+│       ├── file.pdf
+│       ├── fnsys-15-705371.pdf
+│       ├── hipp_natn_2012.pdf
+│       ├── journal.pcbi.1013363.pdf
+│       ├── lewisjcns03.pdf
+│       ├── nfiZAVUWQvKkL38OYNs5Ng.pdf
+│       ├── nihms582066.pdf
+│       ├── pq001867.pdf
+│       ├── spikes.pdf
+│       ├── srep23471.pdf
+│       ├── synchrocom.pdf
+│       ├── vandenHeuvel_Sporns_TrendsCognSci_2013.pdf
+│       ├── whatever-next-predictive-brains-situated-agents-and-the-future-of-cognitive-science.pdf
+│       └── whichmod.pdf
+├── feature_clusters_th_0.0.csv
+├── final_sweep_results_critical_df.csv
+├── final_sweep_results_dynamic_range.csv
+├── gridsearch_kmeans_th_0.0.csv
+├── kmeans_main_th_0.0.png
+├── notebooks
+│   ├── data_analysis
+│   │   ├── analysis_20_healthy_00 copy.ipynb
+│   │   ├── analysis_20_healthy_00.ipynb
+│   │   ├── analysis_20_healthy_02.ipynb
+│   │   ├── analysis_20_healthy_04.ipynb
+│   │   ├── analysis_20_healthy_06.ipynb
+│   │   ├── analysis_20_healthy_08.ipynb
+│   │   ├── brain_atlas.ipynb
+│   │   ├── dti_delays.py
+│   │   ├── initial_analysis.ipynb
+│   │   ├── initial_analysis_th=0.ipynb
+│   │   ├── lisette_analysis.ipynb
+│   │   ├── threshold_comparison.ipynb
+│   │   └── threshold_comparison.png
+│   ├── tutorials
+│   │   ├── brian2
+│   │   └── simple_models
+│   └── two_populations
+│       ├── balance_parameter.ipynb
+│       ├── critical_coupling_value.ipynb
+│       ├── delay_distributions.ipynb
+│       ├── optimization_results
+│       ├── optimize_poisson_input.ipynb
+│       ├── poisson_input.ipynb
+│       ├── recfractory_period.ipynb
+│       ├── symmetric_delay_sweep.ipynb
+│       ├── two_izhikevich_populations.ipynb
+│       ├── two_izhikevich_populations_input_experiment.ipynb
+│       ├── two_izhikevich_populations_main copy.ipynb
+│       ├── two_izhikevich_populations_main.ipynb
+│       ├── two_izhikevich_populations_main_old.ipynb
+│       ├── two_izhikevich_populations_main_updated.ipynb
+│       ├── two_izhikevich_populations_sweep copy.ipynb
+│       ├── two_izhikevich_populations_sweep.ipynb
+│       ├── two_izhikevich_populations_sweep_analysis copy 2.ipynb
+│       ├── two_izhikevich_populations_sweep_analysis copy.ipynb
+│       ├── two_izhikevich_populations_sweep_analysis.ipynb
+│       └── two_izhikevich_populations_test_model2.ipynb
+├── optimization_convergence.png
+├── optimization_results
+│   ├── analysis_convergence.png
+│   ├── best_loss_breakdown.png
+│   ├── iter_000.png
+│   └── loss_distribution.png
+├── profiles_th_0.0.png
+├── reports
+│   ├── 2025-09-04_session copy.md
+│   ├── 2025-09-04_session_notes.md
+│   ├── 2025-09-05_session.md
+│   ├── 2025-09-08_session.md
+│   ├── 2025-09-10_session.md
+│   ├── 2025-09-15_session.md
+│   ├── 2025-09-17.md
+│   ├── 2025-09-18.md
+│   ├── 2025-09-19.md
+│   ├── 2025-09-22.md
+│   ├── 2025-09-23.md
+│   ├── 2025-10-01.md
+│   ├── 2025-10-01_notes.md
+│   ├── 2025-10-07.md
+│   ├── 2025-10-13.md
+│   ├── 2025-10-16.md
+│   ├── 2025-10-17.md
+│   ├── 2025-10-17_session.md
+│   └── template.md
+├── results
+│   ├── ac_comparison.png
+│   ├── data_analysis
+│   │   ├── candidates_th_0.0.csv
+│   │   ├── candidates_th_0.0_laxo.csv
+│   │   ├── candidates_th_0.2.csv
+│   │   ├── candidates_th_0.4.csv
+│   │   ├── distros
+│   │   ├── final_hippo_pfc.csv
+│   │   ├── final_inter.csv
+│   │   ├── final_intra.csv
+│   │   ├── final_multimodal.csv
+│   │   ├── final_thal_ctx.csv
+│   │   ├── quick_analysis_th_0.0.png
+│   │   ├── quick_analysis_th_0.2.png
+│   │   ├── quick_analysis_th_0.4.png
+│   │   ├── results_th_0.0.csv
+│   │   ├── results_th_0.2.csv
+│   │   ├── results_th_0.4.csv
+│   │   ├── results_th_0.6.csv
+│   │   ├── results_th_0.8.csv
+│   │   ├── threshold_comparison.png
+│   │   └── threshold_summary.csv
+│   ├── experiments
+│   │   ├── one_population
+│   │   ├── results_two_pops
+│   │   ├── symmetric_delay_sweep
+│   │   └── two_populations
+│   ├── figures
+│   ├── logs
+│   └── palmigiano_dash.png
+├── src
+│   ├── single_population
+│   │   ├── analysis.py
+│   │   ├── main.ipynb
+│   │   ├── optimization.py
+│   │   ├── parameter_sweep.py
+│   │   └── simulation.py
+│   ├── theoretical
+│   │   ├── analysis.py
+│   │   └── bifurcation_comparison.py
+│   └── two_populations
+│       ├── __pycache__
+│       ├── helpers
+│       ├── metrics.py
+│       ├── model.py
+│       ├── old
+│       ├── plots
+│       └── sweep.py
+└── str.txt
+
+46 directories, 164 files
