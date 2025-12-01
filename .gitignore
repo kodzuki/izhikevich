@@ -160,6 +160,11 @@ data/raw/**/*.nii.gz
 /results/
 **/*.pkl
 **/*.png
+**/*.npy
+*.pkl
+*.png
+*.npy
+/docs/
 
 # Temporary or scratch files
 *.tmp
