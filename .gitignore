@@ -178,3 +178,5 @@ data/raw/**/*.nii.gz
 # OS-specific
 .DS_Store
 Thumbs.db
+*.pdf
+*.npy
