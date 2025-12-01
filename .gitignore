@@ -157,6 +157,10 @@ data/raw/**/*.nii
 data/raw/**/*.nii.gz
 /data/
 
+/results/
+**/*.pkl
+**/*.png
+
 # Temporary or scratch files
 *.tmp
 *.bak

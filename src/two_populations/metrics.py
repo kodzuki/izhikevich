@@ -291,6 +291,71 @@ def power_spectrum_analysis(signal, fs=None, freq_bands=None):
     
     return results
 
+# def intrinsic_timescale_analysis(signal, max_lag_ms=500, dt=0.5):
+#     """Timescale: exponential fit + integrated AC"""
+#     autocorr = cross_correlation_analysis(signal, signal, max_lag_ms, dt)
+    
+#     lags = autocorr['lags']
+#     corr = autocorr['correlation']
+    
+#     if len(lags) == 0:
+#         return {'tau_exp': 0, 'tau_int': 0, 'quality': 'no_data'}
+    
+#     # Normalizar
+#     corr_norm = corr / np.max(np.abs(corr)) if np.max(np.abs(corr)) > 0 else corr
+#     pos_mask = lags >= 0
+#     lags_pos, corr_pos = lags[pos_mask], corr_norm[pos_mask]
+    
+#     # === 1. Exponential fit (MEJORADO) ===
+#     # Estrategia: fit solo hasta primer mínimo local (antes de oscilaciones)
+#     from scipy.signal import find_peaks
+    
+#     # Encontrar primer mínimo (valley)
+#     valleys, _ = find_peaks(-corr_pos)
+    
+#     if len(valleys) > 0:
+#         # Fit solo hasta primer valley
+#         fit_end = min(valleys[0], int(50/dt))  # Max 50ms
+#     else:
+#         # Sin valleys claros: usar ventana fija
+#         fit_end = min(len(corr_pos), int(50/dt))
+    
+#     # Fit exponencial en esta ventana
+#     lags_fit = lags_pos[:fit_end]
+#     corr_fit = corr_pos[:fit_end]
+    
+#     if len(lags_fit) < 3:
+#         tau_exp = 0
+#         quality = 'insufficient_data'
+#     else:
+#         # Linearizar: log(AC) = -t/tau + log(A)
+#         corr_fit_safe = np.clip(corr_fit, 1e-10, None)
+#         log_corr = np.log(corr_fit_safe)
+        
+#         # Fit lineal (robusto a outliers)
+#         from numpy.polynomial import Polynomial
+#         p = Polynomial.fit(lags_fit, log_corr, deg=1)
+#         slope = p.coef[1]
+        
+#         if slope < -1e-6:  # Decay negativo
+#             tau_exp = float(-1.0 / slope)
+#             tau_exp = np.clip(tau_exp, 0, max_lag_ms)  # Clip razonable
+#             quality = 'good' if tau_exp > 5 else 'moderate'
+#         else:
+#             tau_exp = 0
+#             quality = 'no_decay'
+    
+#     # === 2. Integrated AC (sin cambios) ===
+#     zero_cross = np.where(corr_pos <= 1/np.e)[0]
+#     end_idx = zero_cross[0] if len(zero_cross) > 0 else len(corr_pos)
+#     tau_int = float(np.trapz(corr_pos[:end_idx], lags_pos[:end_idx]))
+    
+#     return {
+#         'tau_exp': float(tau_exp),
+#         'tau_int': float(tau_int),
+#         'quality': quality
+#     }
+
 def intrinsic_timescale_analysis(signal, max_lag_ms=500, dt=0.5):
     """Timescale: exponential fit + integrated AC"""
     autocorr = cross_correlation_analysis(signal, signal, max_lag_ms, dt)
@@ -341,8 +406,8 @@ def intrinsic_timescale_analysis(signal, max_lag_ms=500, dt=0.5):
     tau_int = float(np.trapz(corr_pos[:end_idx], lags_pos[:end_idx]))
     
     return {
-        'tau_exp': float(tau_exp),  # exponential decay
-        'tau_int': float(tau_int),  # integrated
+        'tau_exp': float(tau_exp) if not np.isnan(tau_exp) else np.nan,
+        'tau_int': float(tau_int) if not np.isnan(tau_int) else np.nan,
         'quality': quality
     }
 # =============================================================================
