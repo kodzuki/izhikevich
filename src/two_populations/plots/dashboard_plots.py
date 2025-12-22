@@ -307,6 +307,7 @@ def plot_population_dashboard(results_dict, figsize=(20, 11)):
         _plot_delay_distribution(ax3, valid_results, legend_mode='bottom')
     
     # 4) Series temporales
+    
     signal_mode = first_res.get('signal_mode', 'firing_rate')
     is_lfp = (signal_mode == 'lfp')
     view_ms = min((float(r.get('time_series', {}).get('time', [0])[-1] if len(r.get('time_series', {}).get('time', [])) else 0) 
