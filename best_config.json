@@ -1,0 +1,11 @@
+{
+  "filters1": 64,
+  "filters2": 16,
+  "kernel1": 3,
+  "kernel2": 3,
+  "dense1": 32,
+  "dense2": 16,
+  "dropout": 0.4,
+  "learning_rate": 0.001,
+  "batch_size": 64
+}
