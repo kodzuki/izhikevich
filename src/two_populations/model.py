@@ -241,7 +241,21 @@ class IzhikevichNetwork:
         G.I_syn = 0
         
         G.g_exc = 0.0  # adimensional ahora
-        G.tau_syn = 1.5 * ms
+        
+        # delay = 1.0
+        
+        # === ASIGNACIÓN DIFERENCIADA DE TAU_SYN ===
+        # Define constantes específicas para cada tipo
+        # tau_syn_exc = 2.0 * ms  # Decay para excitatorias
+        # tau_syn_inh = 5.0 * ms  # Decay para inhibitorias (ejemplo: más lento)
+        
+        tau_syn_exc = 1.5 * ms  # Decay para excitatorias
+        tau_syn_inh = 1.5 * ms  # Decay para inhibitorias (ejemplo: más lento)
+
+        # Asigna según índice
+        G.tau_syn[:Ne] = tau_syn_exc  # Primeras Ne neuronas (excitatorias)
+        G.tau_syn[Ne:] = tau_syn_inh  # Últimas Ni neuronas (inhibitorias)
+        
         G.tau_exc = 3.0 * ms  # Decay input (Palmigiano)
         
         # Conectividad (igual)
@@ -551,32 +565,38 @@ class IzhikevichNetwork:
         
         return syn_inter
     
-    def setup_monitors(self, population_names, record_v_dt=0.5, sample_fraction=0.5, monitor_conductance=False):
+    def setup_monitors(self, population_names, record_v_dt=0.5, sample_fraction=0.5, 
+                   monitor_conductance=False, monitor_input=False):
         for name in population_names:
             if name in self.populations:
                 G = self.populations[name]['group']
-                Ne = self.populations[name]['Ne']
-                Ni = self.populations[name]['Ni']
-                
-                fixed_pop_seed = self.seed_manager.fixed_seed_A if 'A' in name else self.seed_manager.fixed_seed_B
-                rng_sample = np.random.RandomState(fixed_pop_seed)
+                Ne, Ni = self.populations[name]['Ne'], self.populations[name]['Ni']
                 
                 spike_mon = SpikeMonitor(G)
-                current_mon = StateMonitor(G, ['I_syn', 'I_thalamic'], record=range(0, min(100, Ne)))
                 
-                # QUITAR ESTAS DOS LÍNEAS:
-                # g_mon = StateMonitor(G, 'g_exc', record=[0, 1, 2], dt=0.1*ms)
-                # self.monitors[name]['g_exc_debug'] = g_mon
+                current_mon = None
+                if monitor_input:
+                    current_mon = StateMonitor(G, ['I_syn', 'I_thalamic'], 
+                                            record=range(0, min(100, Ne)))
                 
-                n_exc = int(Ne * sample_fraction)
-                n_inh = int(Ni * sample_fraction)
-                sample_exc = rng_sample.choice(Ne, n_exc, replace=False)
-                sample_inh = Ne + rng_sample.choice(Ni, n_inh, replace=False)
-                sample_indices = np.concatenate([sample_exc, sample_inh])
+                # Voltage monitor solo si se requiere
+                v_mon = None
+                sample_indices = np.array([])
+                n_exc = 0
                 
-                v_mon = StateMonitor(G, 'v', record=sample_indices, dt=record_v_dt*ms)
+                if record_v_dt is not None and sample_fraction > 0:
+                    fixed_pop_seed = (self.seed_manager.fixed_seed_A if 'A' in name 
+                                    else self.seed_manager.fixed_seed_B)
+                    rng_sample = np.random.RandomState(fixed_pop_seed)
+                    
+                    n_exc = int(Ne * sample_fraction)
+                    n_inh = int(Ni * sample_fraction)
+                    sample_exc = rng_sample.choice(Ne, n_exc, replace=False)
+                    sample_inh = Ne + rng_sample.choice(Ni, n_inh, replace=False)
+                    sample_indices = np.concatenate([sample_exc, sample_inh])
+                    
+                    v_mon = StateMonitor(G, 'v', record=sample_indices, dt=record_v_dt*ms)
                 
-                # Crear dict
                 self.monitors[name] = {
                     'spikes': spike_mon,
                     'currents': current_mon,
@@ -585,7 +605,6 @@ class IzhikevichNetwork:
                     'v_n_exc_sampled': n_exc
                 }
                 
-                # Añadir g_exc
                 if monitor_conductance:
                     g_mon = StateMonitor(G, 'g_exc', record=[0,1,2], dt=0.1*ms)
                     self.monitors[name]['g_exc_debug'] = g_mon
@@ -597,20 +616,21 @@ class IzhikevichNetwork:
         for pop_data in self.populations.values():
             net_objects.append(pop_data['group'])
             
-            # AÑADIR POISSONINPUT
-            if 'thalamic' in pop_data:
-                if isinstance(pop_data['thalamic'], list):
-                    net_objects.extend(pop_data['thalamic'])
+            # THALAMIC: es una lista de [poisson_exc, poisson_inh, syn_exc, syn_inh]
+            if 'thalamic' in pop_data and pop_data['thalamic'] is not None:
+                thal = pop_data['thalamic']
+                if isinstance(thal, list):
+                    net_objects.extend(thal)  # ✓ Extend, no append
                 else:
-                    net_objects.append(pop_data['thalamic'])
+                    net_objects.append(thal)
         
-        # Sinapsis (tanto intra como inter)
+        # Sinapsis
         net_objects.extend(self.synapses)
         
-        # Monitores
+        # Monitores (filtrar None y metadata)
         for mon_data in self.monitors.values():
             for key, obj in mon_data.items():
-                if not key.startswith('v_'):
+                if obj is not None and not key.startswith('v_'):
                     net_objects.append(obj)
         
         net = Network(*net_objects)
@@ -619,28 +639,40 @@ class IzhikevichNetwork:
     
     def get_results(self):
         results = {}
-
+        
         for name, monitors in self.monitors.items():
             results[name] = {
                 'spike_monitor': monitors['spikes'],
-                'state_monitor': monitors['currents'],
-                'voltage_monitor': monitors['voltage'],
-                'v_sample_indices': monitors['v_sample_indices'],
-                'v_n_exc_sampled': monitors['v_n_exc_sampled'],
                 'spike_times': np.array(monitors['spikes'].t / ms),
                 'spike_indices': np.array(monitors['spikes'].i),
-                'times': np.array(monitors['currents'].t / ms),
-                'I_syn': np.array(monitors['currents'].I_syn),
-                'I_thalamic': np.array(monitors['currents'].I_thalamic),
-                'potentials': np.array(monitors['voltage'].v),
-                'potentials_times': np.array(monitors['voltage'].t / ms)
+                'v_sample_indices': monitors['v_sample_indices'],
+                'v_n_exc_sampled': monitors['v_n_exc_sampled']
             }
             
-            # Añadir g_exc si existe
+            # Currents (opcional)
+            if monitors['currents'] is not None:
+                results[name].update({
+                    'state_monitor': monitors['currents'],
+                    'times': np.array(monitors['currents'].t / ms),
+                    'I_syn': np.array(monitors['currents'].I_syn),
+                    'I_thalamic': np.array(monitors['currents'].I_thalamic)
+                })
+            
+            # Voltajes (opcional)
+            if monitors['voltage'] is not None:
+                results[name].update({
+                    'voltage_monitor': monitors['voltage'],
+                    'potentials': np.array(monitors['voltage'].v),
+                    'potentials_times': np.array(monitors['voltage'].t / ms)
+                })
+            
+            # g_exc (opcional)
             if 'g_exc_debug' in monitors:
-                results[name]['g_exc'] = np.array(monitors['g_exc_debug'].g_exc)
-                results[name]['g_exc_times'] = np.array(monitors['g_exc_debug'].t / ms)
-                
+                results[name].update({
+                    'g_exc': np.array(monitors['g_exc_debug'].g_exc),
+                    'g_exc_times': np.array(monitors['g_exc_debug'].t / ms)
+                })
+        
         results['dt'] = self.dt_val
         results['T_total'] = self.T_total
         results['seed_summary'] = self.seed_manager.get_seed_summary()
