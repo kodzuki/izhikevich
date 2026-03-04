@@ -1,0 +1,17 @@
+no change     /common/conda/condabin/conda
+no change     /common/conda/bin/conda
+no change     /common/conda/bin/conda-env
+no change     /common/conda/bin/activate
+no change     /common/conda/bin/deactivate
+no change     /common/conda/etc/profile.d/conda.sh
+no change     /common/conda/etc/fish/conf.d/conda.fish
+no change     /common/conda/shell/condabin/Conda.psm1
+no change     /common/conda/shell/condabin/conda-hook.ps1
+no change     /common/conda/lib/python3.9/site-packages/xontrib/conda.xsh
+no change     /common/conda/etc/profile.d/conda.csh
+no change     /home/tonicoll/.bashrc
+No action taken.
+=== INICIO DEL JOB ===
+Nodo: slurm11
+Ruta: /home/tonicoll/Projects/izhikevich/notebooks/two_populations
+Cores asignados: 32

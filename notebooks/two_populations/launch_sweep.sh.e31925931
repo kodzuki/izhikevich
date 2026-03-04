@@ -1,0 +1,5 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+/home/tonicoll/Projects/izhikevich/notebooks/two_populations/./launch_sweep.sh: line 19: python: command not found
+srun: error: gpu02: task 0: Exited with exit code 127

@@ -1,0 +1,48 @@
+no change     /common/conda/condabin/conda
+no change     /common/conda/bin/conda
+no change     /common/conda/bin/conda-env
+no change     /common/conda/bin/activate
+no change     /common/conda/bin/deactivate
+no change     /common/conda/etc/profile.d/conda.sh
+no change     /common/conda/etc/fish/conf.d/conda.fish
+no change     /common/conda/shell/condabin/Conda.psm1
+no change     /common/conda/shell/condabin/conda-hook.ps1
+no change     /common/conda/lib/python3.9/site-packages/xontrib/conda.xsh
+no change     /common/conda/etc/profile.d/conda.csh
+no change     /home/tonicoll/.bashrc
+No action taken.
+=== INICIO DEL JOB ===
+Nodo: gpu02
+Ruta: /home/tonicoll/Projects/izhikevich/notebooks/two_populations
+Cores asignados: 32
+
+================================================================================
+SWEEP SUMMARY
+================================================================================
+                  k       rate_hz  ...  n_neurons_analyzed   total_spikes
+count  12500.000000  12500.000000  ...         12500.00000   12500.000000
+mean      10.000000     21.000000  ...           747.21952  108969.831120
+std        5.890387     11.191734  ...           195.18751   49105.515614
+min        0.000000      2.000000  ...             0.00000     326.000000
+25%        4.897959     11.306122  ...           800.00000   78146.500000
+50%       10.000000     21.000000  ...           800.00000  112834.500000
+75%       15.102041     30.693878  ...           800.00000  144179.750000
+max       20.000000     40.000000  ...           800.00000  216058.000000
+
+[8 rows x 10 columns]
+
+================================================================================
+
+================================================================================
+TRIAL VARIABILITY
+================================================================================
+      firing_rate            P_transmission                sigma          
+             mean        std           mean       std       mean       std
+trial                                                                     
+0       31.223108  13.832289       0.206291  0.101506  16.332319  8.110840
+1       31.230147  13.849326       0.206194  0.101870  16.326996  8.138660
+2       31.212692  13.847869       0.206697  0.101379  16.366020  8.099314
+3       31.245556  13.835089       0.207135  0.101359  16.400943  8.097340
+4       31.205744  13.849330       0.205885  0.101633  16.302496  8.119872
+
+================================================================================
