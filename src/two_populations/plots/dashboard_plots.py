@@ -59,6 +59,7 @@ def plot_connectivity_dashboard(results_dict, figsize=(18, 12)):
                 ax1.axvline(x=peak_lag, color='k', linestyle='--', alpha=0.6)
 
     ax1.set_xlabel('Lag (ms)')
+    ax1.set_xlim(-250, 250)
     ax1.set_ylabel('Cross-correlation')
     ax1.set_title('Cross-correlation Analysis')
     handles, labels = ax1.get_legend_handles_labels()
