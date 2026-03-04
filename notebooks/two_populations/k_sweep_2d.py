@@ -3,6 +3,19 @@
 
 import os
 import sys
+# =============================================================================
+# 🛑 CRÍTICO: CONFIGURACIÓN IFISC PARA EVITAR SOBRESUSCRIPCIÓN
+# =============================================================================
+# Limitamos Numpy/MKL a 1 solo hilo por proceso, ya que nosotros hacemos 
+# la paralelización manual con multiprocessing.Pool(32).
+# Esto DEBE ir antes de importar numpy o brian2.
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+
 from pathlib import Path
 import numpy as np
 import matplotlib
@@ -32,8 +45,8 @@ logger = setup_logger("sweep_prod", console_level="INFO", log_to_file=False)
 # ==========================================
 
 # Grilla de Alta Densidad: 100 x 50 x 5 = 25.000 Sims
-K_INTRA_VALUES = np.linspace(0.1, 25.0, 100)
-K_INTER_RATIOS = np.linspace(0.0, 1.0, 50)
+K_INTRA_VALUES = np.linspace(0.1, 20.0, 30)
+K_INTER_RATIOS = np.linspace(0.0, 1.0, 30)
 
 # Parámetros originales del notebook
 POPULATION_PARAMS = {
@@ -45,9 +58,9 @@ POPULATION_PARAMS = {
 
 SIM_CONFIG = {
     'dt_ms': 0.1,
-    'T_ms': 3000,
-    'warmup_ms': 750,  # 750ms de descarte
-    'n_trials': 5,     # 5 trials por punto
+    'T_ms': 3500,
+    'warmup_ms': 500,  # 750ms de descarte
+    'n_trials': 4,     # 5 trials por punto
     'fixed_seed': 42,
     'variable_seed_base': 500
 }
@@ -134,8 +147,8 @@ def run_single_simulation(args):
                 't': np.array(results['A']['spike_monitor'].t/ms, dtype=np.float32),
                 'i': np.array(results['A']['spike_monitor'].i, dtype=np.int32),
                 # LFP Promedio
-                'lfp_A': np.mean(results['A']['state_monitor'].v, axis=0).astype(np.float32),
-                'lfp_B': np.mean(results['B']['state_monitor'].v, axis=0).astype(np.float32)
+                'lfp_A': np.mean(results['A']['voltage_monitor'].v, axis=0).astype(np.float32),
+                'lfp_B': np.mean(results['B']['voltage_monitor'].v, axis=0).astype(np.float32)
             }
             
             # Carpeta organizada
