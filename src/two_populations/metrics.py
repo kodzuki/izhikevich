@@ -246,23 +246,66 @@ def spectral_coherence_analysis(signal_A, signal_B, fs=None, nperseg=None):
         'broad_coherence': broad_coherence,
     }
 
+# def power_spectrum_analysis(signal, fs=None, freq_bands=None):
+#     """Power spectrum with band-specific power"""
+#     if freq_bands is None:
+#         freq_bands = {'alpha': (8, 12), 'beta': (13, 30), 'gamma': (30, 50)}
+    
+#     if len(signal) < 64:
+#         # devolver estructura completa aunque vacía para compat
+#         base = {'freqs': np.array([]), 'psd': np.array([]), 'total_power': 0.0,
+#                 'peak_freq': 0.0, 'peak_power': 0.0}
+        
+#         for band in freq_bands.keys():
+#             base[f'{band}_power'] = 0.0
+            
+#         return base
+    
+#     # Δf objetivo ~ 0.5 Hz
+#     nperseg = min(len(signal), max(64, int(fs / 0.5)))
+#     freqs, psd = scipy_signal.welch(
+#         signal, fs=fs, window='hann', nperseg=nperseg,
+#         noverlap=nperseg//2, detrend='constant'
+#     )
+    
+#     results = {'freqs': freqs, 'psd': psd}
+#     nyq = 0.5 * fs
+#     for band_name, (low_f, high_f) in freq_bands.items():
+#         high_eff = min(high_f, nyq * 0.98)
+#         if high_eff <= low_f:
+#             results[f'{band_name}_power'] = 0.0
+#             continue
+#         mask = (freqs >= low_f) & (freqs <= high_eff)
+#         power = float(np.trapz(psd[mask], freqs[mask])) if np.any(mask) else 0.0
+#         results[f'{band_name}_power'] = power
+        
+#     # totales/peaks como la antigua
+#     results['total_power'] = float(np.trapz(psd, freqs)) if len(freqs) else 0.0
+#     if len(psd):
+#         pidx = int(np.argmax(psd))
+#         results['peak_freq'] = float(freqs[pidx])
+#         results['peak_power'] = float(psd[pidx])
+#     else:
+#         results['peak_freq'] = 0.0
+#         results['peak_power'] = 0.0
+    
+#     return results
+
 def power_spectrum_analysis(signal, fs=None, freq_bands=None):
     """Power spectrum with band-specific power"""
     if freq_bands is None:
         freq_bands = {'alpha': (8, 12), 'beta': (13, 30), 'gamma': (30, 50)}
     
     if len(signal) < 64:
-        # devolver estructura completa aunque vacía para compat
         base = {'freqs': np.array([]), 'psd': np.array([]), 'total_power': 0.0,
                 'peak_freq': 0.0, 'peak_power': 0.0}
-        
         for band in freq_bands.keys():
             base[f'{band}_power'] = 0.0
-            
         return base
     
-    # Δf objetivo ~ 0.5 Hz
-    nperseg = min(len(signal), max(64, int(fs / 0.5)))
+    # Δf = 2Hz: resolución suficiente para todas las bandas (δ/θ/α/β/γ hasta 100Hz)
+    # y garantiza ≥8 segmentos con señales de 3-6s
+    nperseg = int(max(256, min(fs / 2.0, len(signal) // 4)))
     freqs, psd = scipy_signal.welch(
         signal, fs=fs, window='hann', nperseg=nperseg,
         noverlap=nperseg//2, detrend='constant'
