@@ -1,0 +1,57 @@
+
+CondaError: Run 'conda init' before 'conda activate'
+
+/home/tonicoll/.conda/envs/neurophysics/lib/python3.11/site-packages/setuptools/_distutils/_msvccompiler.py:12: UserWarning: _get_vc_env is private; find an alternative (pypa/distutils#340)
+  warnings.warn(
+[1mINFO    [0m | [36msrc.two_populations.helpers.logger[0m:[36msetup_logger[0m:[36m98[0m - [1mLogs guardándose en: /home/tonicoll/Projects/izhikevich/results/logs/sweep_3d_autocorr_gamma_20260417_155605.log[0m
+[1mINFO    [0m | [36m__main__[0m:[36m<module>[0m:[36m63[0m - [1mWorking directory: /home/tonicoll/Projects/izhikevich[0m
+[1mINFO    [0m | [36m__main__[0m:[36m<module>[0m:[36m116[0m - [1mGrid: 20 × 20 × 20[0m
+[1mINFO    [0m | [36m__main__[0m:[36m<module>[0m:[36m117[0m - [1mTotal configs: 8000[0m
+[1mINFO    [0m | [36m__main__[0m:[36m<module>[0m:[36m118[0m - [1mTotal sims: 24000 (3 trials/config)[0m
+[1mINFO    [0m | [36m__main__[0m:[36m<module>[0m:[36m146[0m - [1m📂 RESUMIENDO TRABAJO EN: results/sweep_3d_autocorr_master_slave20260331_195925[0m
+[32m[1mSUCCESS [0m | [36m__main__[0m:[36m<module>[0m:[36m199[0m - [32m[1mOutput directory: results/sweep_3d_autocorr_master_slave20260331_195925[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m878[0m - [1mStarting sweep: 40 batches, 63 cores[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m879[0m - [1mTotal simulations: 24000[0m
+Batches:   0%|          | 0/40 [00:00<?, ?it/s][1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 0 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 1 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 2 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 3 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 4 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 5 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 6 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 7 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 8 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 9 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 10 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 11 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 12 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 13 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 14 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 15 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 16 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 17 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 18 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 19 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 20 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 21 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 22 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 23 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 24 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 25 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 26 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 27 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 28 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 29 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 30 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 31 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 32 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 33 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 34 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 35 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 36 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 37 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 38 ya existe. Saltando...[0m
+[1mINFO    [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m898[0m - [1m⏭️ Batch 39 ya existe. Saltando...[0m
+Batches: 100%|██████████| 40/40 [00:00<00:00, 2773.78it/s]
+[32m[1mSUCCESS [0m | [36m__main__[0m:[36mrun_sweep[0m:[36m949[0m - [32m[1mSweep completed![0m
+[32m[1mSUCCESS [0m | [36m__main__[0m:[36m<module>[0m:[36m964[0m - [32m[1m3D arrays saved in results/sweep_3d_autocorr_master_slave20260331_195925/metrics_3d[0m

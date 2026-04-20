@@ -1,0 +1,793 @@
+.
+├── DL
+│   ├── best_cnn_model.keras
+│   ├── best_config.json
+│   ├── clustering_main_th_0.0.png
+│   ├── feature_clusters_th_0.0.csv
+│   ├── gridsearch_kmeans_th_0.0.csv
+│   └── random_search_results.csv
+├── README.md
+├── archive
+│   └── notebooks
+│       ├── Spike-Timing Dynamics of Neurona Groups.ipynb
+│       ├── initial_analysis copy.ipynb
+│       ├── simple_analysis.py
+│       ├── simple_model_brian2 copy.ipynb
+│       ├── simple_model_spiking_neurons_generalize_dt copy.ipynb
+│       ├── simple_model_spiking_neurons_modified.ipynb
+│       ├── simplest_model_brian2.ipynb
+│       ├── simplest_model_brian2_modified_optim.ipynb
+│       ├── simplest_model_brian2_modified_optim2.ipynb
+│       ├── two_izhikevich_populations copy 2.ipynb
+│       └── two_izhikevich_populations copy.ipynb
+├── context.md
+├── data
+│   ├── exports
+│   │   └── avg_distributions_filtered
+│   └── raw
+│       ├── atlas_cg_3d5_names.txt
+│       ├── f_tract_00_v2210
+│       └── rat_delays_fibers_0.0
+├── notebooks
+│   ├── data_analysis
+│   │   ├── alcoholic_vs_healthy_dl.ipynb
+│   │   ├── alcoholic_vs_healthy_dl_velocity_clean.ipynb
+│   │   ├── alcoholic_vs_healthy_velocity_REDUCED.ipynb
+│   │   ├── alcoholic_vs_healthy_velocity_clean.html
+│   │   ├── alcoholic_vs_healthy_velocity_clean.ipynb
+│   │   ├── brain_atlas.ipynb
+│   │   ├── dti_delays.py
+│   │   ├── report.html
+│   │   ├── threshold_comparison.ipynb
+│   │   ├── threshold_comparison.png
+│   │   └── threshold_comparison_files
+│   ├── old_notebooks_4.3.26
+│   │   ├── alcoholic_vs_healthy.ipynb
+│   │   ├── analysis_20_healthy_00 copy.ipynb
+│   │   ├── analysis_20_healthy_00.ipynb
+│   │   ├── analysis_20_healthy_00_22_12_25.ipynb
+│   │   ├── analysis_20_healthy_02.ipynb
+│   │   ├── analysis_20_healthy_04.ipynb
+│   │   ├── analysis_20_healthy_06.ipynb
+│   │   ├── analysis_20_healthy_08.ipynb
+│   │   ├── analysis_20_sick_00_22_12_25.ipynb
+│   │   ├── initial_analysis.ipynb
+│   │   ├── initial_analysis_th=0.ipynb
+│   │   └── lisette_analysis.ipynb
+│   ├── tutorials
+│   │   ├── brian2
+│   │   └── simple_models
+│   └── two_populations
+│       ├── Untitled-1.ipynb
+│       ├── __pycache__
+│       ├── ac_timescales_v2.ipynb
+│       ├── band_ratios_async.png
+│       ├── band_ratios_async_grouped.png
+│       ├── band_ratios_async_individual.png
+│       ├── band_ratios_osc.png
+│       ├── band_ratios_osc_grouped.png
+│       ├── band_ratios_osc_individual.png
+│       ├── band_ratios_v1.png
+│       ├── caso1_INT_areas_vs_freq.png
+│       ├── caso1_INT_vs_freq.png
+│       ├── caso1_resonante_vs_valle.png
+│       ├── caso1b_DHO_ACW_vs_freq.png
+│       ├── caso1b_DHO_regimenes_ACW_vs_freq.png
+│       ├── caso1b_DHO_regimenes_INT_vs_freq.png
+│       ├── caso2_async_osc_sup.png
+│       ├── caso2_kintra_sub_crit_sup.png
+│       ├── caso3_desacopl_vs_maximo.png
+│       ├── caso4_dos_resonancias.png
+│       ├── caso5_popA_vs_popB_vs_delay.png
+│       ├── caso5_popA_vs_popB_vs_k_intra.png
+│       ├── caso5_popA_vs_popB_vs_ratio.png
+│       ├── coupling_cases_analysis.ipynb
+│       ├── critical_coupling_value copy.ipynb
+│       ├── critical_coupling_value.ipynb
+│       ├── debug_kernel.py
+│       ├── debug_trayectorias_heatmap.png
+│       ├── dho_estocastico_ACW_vs_freq.png
+│       ├── dho_estocastico_INT_vs_freq.png
+│       ├── dho_ext_noise_1x3_ACW0.png
+│       ├── dho_ext_noise_1x3_ACW_0.png
+│       ├── dho_ext_noise_1x3_INT_0.png
+│       ├── dho_ext_noise_1x3_INT_01.png
+│       ├── dho_ext_noise_2x3.png
+│       ├── dho_ext_noise_3x3_ACW0.png
+│       ├── dho_ext_noise_3x3_ACW01.png
+│       ├── dho_noisy_3x3_ACW0.png
+│       ├── dho_noisy_3x3_ACW01.png
+│       ├── dho_noisy_ACW_vs_freq.png
+│       ├── dho_stocastico_3x3_ACW0.png
+│       ├── dho_stocastico_3x3_ACW01.png
+│       ├── dho_stocastico_3x3_ACW_0.png
+│       ├── dho_stocastico_3x3_INT_0.png
+│       ├── dho_stocastico_3x3_INT_01.png
+│       ├── f1d_freq_vs_kintra.png
+│       ├── f2a_int_vs_delay_osc.png
+│       ├── f2b_freq_vs_delay_osc.png
+│       ├── f2c_int_vs_delay_regimes.png
+│       ├── f2d_int_vs_delay_ctrl.png
+│       ├── f3a_freq_vs_ratio.png
+│       ├── f3b_int_vs_ratio.png
+│       ├── f3c_phasespace.png
+│       ├── f3c_phasespace_alldelays.png
+│       ├── f3c_phasespace_exploratory.png
+│       ├── f3d_corr_vs_delay.png
+│       ├── f3d_corr_vs_delay_v2.png
+│       ├── f3d_regime_validation.png
+│       ├── f4a_mechanism_diagram.png
+│       ├── f4b_int_vs_delay_ratios.png
+│       ├── f4b_int_vs_delay_ratios_both.png
+│       ├── f4b_kuramoto_validation.png
+│       ├── f4c_regime_validation.png
+│       ├── f5a_aging_heatmap.png
+│       ├── f5a_freq_heatmap.png
+│       ├── f5a_multiple_trajectories.png
+│       ├── f5b_abanico_trajectories.png
+│       ├── f5b_aging_trajectories.png
+│       ├── f5b_aging_trajectories_final.png
+│       ├── f5b_aging_trajectories_with_error.png
+│       ├── f5b_phasespace_trajectories.png
+│       ├── f5b_supp_trajectory_variability.png
+│       ├── f5b_trajectories_corrected.png
+│       ├── f5b_trajectories_final.png
+│       ├── f5c_disassociation_deltas.png
+│       ├── f5c_model_vs_literature.png
+│       ├── f5c_phasespace_trajectories.png
+│       ├── f5c_phasespace_vectors.png
+│       ├── fig1_model_and_regimes.png
+│       ├── fig1_panel_a_architecture_improved.png
+│       ├── fig1_panel_a_final.png
+│       ├── fig1_panel_b_final.png
+│       ├── fig1_panel_b_improved.png
+│       ├── fig1_panel_b_raster_fr.png
+│       ├── fig1_panel_c_psd.png
+│       ├── fig1_panel_c_psd_real.png
+│       ├── fig2_delay_resonances.pdf
+│       ├── fig2_delay_resonances.png
+│       ├── focal_heatmap_2d.png
+│       ├── focal_peak_delay.png
+│       ├── focal_peak_kintra.png
+│       ├── focal_peak_ratio.png
+│       ├── focal_peak_vs_delay_ratios.png
+│       ├── focal_peak_vs_delay_ratios_async.png
+│       ├── focal_peak_vs_kintra_delays.png
+│       ├── focal_peak_vs_kintra_delays_async.png
+│       ├── focal_peak_vs_ratio_delays.png
+│       ├── focal_peak_vs_ratio_delays_async.png
+│       ├── heatmap_correlacion_r.png
+│       ├── heatmap_correlacion_r_2d.png
+│       ├── heatmap_disociacion.png
+│       ├── heatmap_freq_kintra_delay.png
+│       ├── heatmap_freq_osc_vs_async.png
+│       ├── heatmap_freq_vs_int_2d.png
+│       ├── heatmap_global_INT.png
+│       ├── heatmap_kintra_delay.png
+│       ├── heatmap_osc_vs_async.png
+│       ├── int01_vs_delay_ratios.png
+│       ├── int01_vs_delay_ratios_async.png
+│       ├── int01_vs_kintra_delays.png
+│       ├── int01_vs_kintra_delays_async.png
+│       ├── int01_vs_ratio_delays.png
+│       ├── int01_vs_ratio_delays_async.png
+│       ├── int_empirical_vs_fitted.png
+│       ├── int_heatmaps_2D.png
+│       ├── int_heatmaps_2D_std.png
+│       ├── int_metrics_vs_delay.png
+│       ├── izhikevich_INT_vs_freq.png
+│       ├── k_sweep_2d.py
+│       ├── k_sweep_2d_analysis.ipynb
+│       ├── launch_sweep.sh
+│       ├── launch_sweep.sh.e32914469
+│       ├── launch_sweep.sh.e32916621
+│       ├── launch_sweep.sh.e32970430
+│       ├── launch_sweep.sh.e33446550
+│       ├── launch_sweep.sh.e33488179
+│       ├── launch_sweep.sh.e33733455
+│       ├── launch_sweep.sh.e33733456
+│       ├── launch_sweep.sh.e33733457
+│       ├── launch_sweep.sh.e33845970
+│       ├── launch_sweep.sh.e33845971
+│       ├── launch_sweep.sh.e33846318
+│       ├── launch_sweep.sh.e33846389
+│       ├── launch_sweep.sh.o32914469
+│       ├── launch_sweep.sh.o32916621
+│       ├── launch_sweep.sh.o32970064
+│       ├── launch_sweep.sh.o32970089
+│       ├── launch_sweep.sh.o32970135
+│       ├── launch_sweep.sh.o32970430
+│       ├── launch_sweep.sh.o33446550
+│       ├── launch_sweep.sh.o33488179
+│       ├── launch_sweep.sh.o33733455
+│       ├── launch_sweep.sh.o33733456
+│       ├── launch_sweep.sh.o33733457
+│       ├── launch_sweep.sh.o33845970
+│       ├── launch_sweep.sh.o33845971
+│       ├── launch_sweep.sh.o33846318
+│       ├── launch_sweep.sh.o33846389
+│       ├── model_delay_sweep.png
+│       ├── model_delay_sweep_INT.png
+│       ├── noisy_ACW_vs_freq.png
+│       ├── noisy_INT_vs_freq.png
+│       ├── old_notebooks
+│       ├── paradox_Q_sweep.png
+│       ├── paradox_Q_sweep_INT.png
+│       ├── results
+│       ├── spectral_3d_async.html
+│       ├── spectral_3d_interactivo.html
+│       ├── spectral_3d_osc.html
+│       ├── spectral_3d_v2.html
+│       ├── spectral_3d_v3.html
+│       ├── spectral_analysis_1d_full.ipynb
+│       ├── spectral_analysis_1d_pre_paper.ipynb
+│       ├── spectral_analysis_1d_reduced.ipynb
+│       ├── spectral_analysis_paper_clean copy.ipynb
+│       ├── spectral_analysis_paper_clean.ipynb
+│       ├── spectral_casos_comparativos.png
+│       ├── spectral_casos_v2.png
+│       ├── spectral_casos_v3.png
+│       ├── spectral_diag_psd.png
+│       ├── spectral_diag_psd_async.png
+│       ├── spectral_diag_psd_osc.png
+│       ├── spectral_heatmap.png
+│       ├── spectral_heatmap_async.png
+│       ├── spectral_heatmap_osc.png
+│       ├── spectral_heatmap_v2.png
+│       ├── spectral_heatmap_v3.png
+│       ├── spectral_peaks_delay_dom_async.csv
+│       ├── spectral_peaks_delay_dom_osc.csv
+│       ├── spectral_peaks_delay_flat_async.csv
+│       ├── spectral_peaks_delay_flat_osc.csv
+│       ├── spectral_peaks_kintra_dom.csv
+│       ├── spectral_peaks_kintra_flat.csv
+│       ├── spectral_peaks_ratio_dom_async.csv
+│       ├── spectral_peaks_ratio_dom_osc.csv
+│       ├── spectral_peaks_ratio_flat_async.csv
+│       ├── spectral_peaks_ratio_flat_osc.csv
+│       ├── spectral_peaks_vs_delay.csv
+│       ├── spectral_peaks_vs_kintra.csv
+│       ├── spectral_peaks_vs_ratio.csv
+│       ├── spectral_scatter_1d.png
+│       ├── spectral_scatter_1d_freqcolor.png
+│       ├── spectral_scatter_async.png
+│       ├── spectral_scatter_async_v2.png
+│       ├── spectral_scatter_osc.png
+│       ├── spectral_scatter_osc_v2.png
+│       ├── spectral_scatter_trials.png
+│       ├── spectral_scatter_trials_v2.png
+│       ├── spectral_scatter_v3.png
+│       ├── spectral_violins_async.png
+│       ├── spectral_violins_log.png
+│       ├── spectral_violins_osc.png
+│       ├── spike_analysis_improved.ipynb
+│       ├── spike_propagation_2d_sweep.py
+│       ├── spike_propagation_2d_sweep_analysis.ipynb
+│       ├── spike_propagation_2d_sweep_analysis2.ipynb
+│       ├── spike_propagation_2d_sweep_analysis4.ipynb
+│       ├── spike_propagation_reanalysis.py
+│       ├── sweep_3d_autocorrelation2.py
+│       ├── sweep_3d_autocorrelation_analysis2.ipynb
+│       ├── sweep_3d_autocorrelation_analysis3.ipynb
+│       ├── sweep_3d_autocorrelation_final.ipynb
+│       ├── symmetric_delay_sweep.ipynb
+│       ├── traj_valid_zones.png
+│       ├── trivial_A_signals.png
+│       ├── trivial_B_acs.png
+│       ├── trivial_C_scatter.png
+│       ├── trivial_D_trajectories.png
+│       ├── twof_ACW0_ACW01_amplitudes.png
+│       ├── twof_ACW0_amplitudes.png
+│       ├── twof_ACW0_vs_freq.png
+│       ├── twof_INT_amplitudes_2x2.png
+│       ├── twof_noisy_2x3_ACW0.png
+│       ├── twof_noisy_2x3_ACW_0.png
+│       ├── twof_noisy_2x3_INT_0.png
+│       ├── twof_noisy_3x3_ACW0.png
+│       ├── twof_noisy_ACW_vs_freq.png
+│       └── twof_noisy_INT_vs_freq.png
+├── optimization_convergence.png
+├── optimization_results
+│   ├── analysis_convergence.png
+│   ├── best_loss_breakdown.png
+│   ├── iter_000.png
+│   └── loss_distribution.png
+├── other_results
+│   ├── correlations_th_0.0.png
+│   ├── criticality_analysis_results.pkl
+│   ├── df_sweep_enriched_final.pkl
+│   ├── df_sweep_v7_final.pkl
+│   ├── final_sweep_results_dynamic_range.csv
+│   ├── fr_exc_inh_comparison.png
+│   ├── fr_vs_k_transition.png
+│   ├── k0_validation.csv
+│   ├── test_band_timescales_validation.png
+│   └── validation_final.png
+├── reports
+│   ├── 2025-09-04_session copy.md
+│   ├── 2025-09-04_session_notes.md
+│   ├── 2025-09-05_session.md
+│   ├── 2025-09-08_session.md
+│   ├── 2025-09-10_session.md
+│   ├── 2025-09-15_session.md
+│   ├── 2025-09-17.md
+│   ├── 2025-09-18.md
+│   ├── 2025-09-19.md
+│   ├── 2025-09-22.md
+│   ├── 2025-09-23.md
+│   ├── 2025-10-01.md
+│   ├── 2025-10-01_notes.md
+│   ├── 2025-10-07.md
+│   ├── 2025-10-13.md
+│   ├── 2025-10-16.md
+│   ├── 2025-10-17.md
+│   ├── 2025-10-17_session.md
+│   ├── 30.11.25-meeting.pdf
+│   ├── Intrinsic_Timescales_Extended.pdf
+│   ├── intrinsic_timescales_sweeps.pdf
+│   ├── poster-final-fixed.pdf
+│   ├── summary-26-01-26.pdf
+│   ├── summary-26.2.26.pdf
+│   ├── summary-30-01-26.pdf
+│   └── template.md
+├── req.txt
+├── results
+│   ├── analysis_cases_20260204_0408
+│   │   ├── AI
+│   │   ├── SO_high
+│   │   └── S_osc
+│   ├── analysis_cases_20260204_0415
+│   │   ├── AI
+│   │   ├── SO_high
+│   │   └── S_osc
+│   ├── analysis_cases_20260204_0416
+│   │   ├── AI
+│   │   ├── SO_high
+│   │   └── S_osc
+│   ├── analysis_cases_20260204_0418
+│   │   ├── AI
+│   │   ├── SO_high
+│   │   └── S_osc
+│   ├── analysis_cases_20260204_0424
+│   │   ├── AI
+│   │   ├── SO_high
+│   │   └── S_osc
+│   ├── analytical_AC
+│   │   ├── Caso_1:_Oscilación_Alfa_P.png
+│   │   ├── Caso_1b:_DHO_Determinista.png
+│   │   ├── Caso_2:_Alfa_(8.0Hz)_+_Ga.png
+│   │   ├── Caso_2:_Alfa_(8Hz)_+_Gamm.png
+│   │   ├── Caso_3:_DHO_alfa_(γ=0.02,.png
+│   │   ├── Caso_3:_DHO_alfa_estocást.png
+│   │   ├── Caso_4:_DHO_alto_Q_(γ=0.0.png
+│   │   ├── Caso_4a:_Oscilador_puro_+.png
+│   │   ├── Caso_4b:_Alfa+Gamma_+_Rui.png
+│   │   ├── Caso_5:_DHO_alfa_+_Ruido_.png
+│   │   ├── Caso_5:_Oscilación_Alfa_+.png
+│   │   ├── Caso_6:_Dos_DHOs_(Alfa_8H.png
+│   │   ├── Caso_6:_Dos_DHOs_(alfa_8H.png
+│   │   ├── Caso_6b:_Dos_DHOs_+_Ruido.png
+│   │   ├── Caso_7:_Proceso_OU_puro_(.png
+│   │   ├── Izhikevich_–_D=0ms___(in-.png
+│   │   ├── Izhikevich_–_D=26ms__(val.png
+│   │   ├── Izhikevich_–_D=44ms__(ant.png
+│   │   ├── Izhikevich_–_D=65ms__(ópt.png
+│   │   ├── Izhikevich_–_D=95ms__(re-.png
+│   │   ├── SNN_Izhikevich_–_D=0ms___.png
+│   │   ├── SNN_Izhikevich_–_D=26ms__.png
+│   │   ├── SNN_Izhikevich_–_D=44ms__.png
+│   │   ├── SNN_Izhikevich_–_D=65ms__.png
+│   │   ├── SNN_Izhikevich_–_D=95ms__.png
+│   │   ├── fig1_signal_Caso_1:_Oscilación_Alfa_P.png
+│   │   ├── fig1_signal_Caso_1b:_DHO_Determinista.png
+│   │   ├── fig1_signal_Caso_2:_Alfa_(8.0Hz)_+_Ga.png
+│   │   ├── fig1_signal_Caso_2:_Alfa_(8Hz)_+_Gamm.png
+│   │   ├── fig1_signal_Caso_3:_DHO_alfa_(γ=0.02,.png
+│   │   ├── fig1_signal_Caso_3:_DHO_alfa_estocást.png
+│   │   ├── fig1_signal_Caso_4:_DHO_alto_Q_(γ=0.0.png
+│   │   ├── fig1_signal_Caso_4a:_Oscilador_puro_+.png
+│   │   ├── fig1_signal_Caso_4b:_Alfa+Gamma_+_Rui.png
+│   │   ├── fig1_signal_Caso_5:_DHO_alfa_+_Ruido_.png
+│   │   ├── fig1_signal_Caso_5:_Oscilación_Alfa_+.png
+│   │   ├── fig1_signal_Caso_6:_Dos_DHOs_(Alfa_8H.png
+│   │   ├── fig1_signal_Caso_6:_Dos_DHOs_(alfa_8H.png
+│   │   ├── fig1_signal_Caso_6b:_Dos_DHOs_+_Ruido.png
+│   │   ├── fig1_signal_Caso_7:_Proceso_OU_puro_(.png
+│   │   ├── fig1_signal_Izhikevich_–_D=0ms___(in-.png
+│   │   ├── fig1_signal_Izhikevich_–_D=26ms__(val.png
+│   │   ├── fig1_signal_Izhikevich_–_D=44ms__(ant.png
+│   │   ├── fig1_signal_Izhikevich_–_D=65ms__(ópt.png
+│   │   ├── fig1_signal_Izhikevich_–_D=95ms__(re-.png
+│   │   ├── fig1_signal_SNN_Izhikevich_–_D=0ms___.png
+│   │   ├── fig1_signal_SNN_Izhikevich_–_D=26ms__.png
+│   │   ├── fig1_signal_SNN_Izhikevich_–_D=44ms__.png
+│   │   ├── fig1_signal_SNN_Izhikevich_–_D=65ms__.png
+│   │   ├── fig1_signal_SNN_Izhikevich_–_D=95ms__.png
+│   │   ├── fig2_ac_Caso_1:_Oscilación_Alfa_P.png
+│   │   ├── fig2_ac_Caso_1b:_DHO_Determinista.png
+│   │   ├── fig2_ac_Caso_2:_Alfa_(8.0Hz)_+_Ga.png
+│   │   ├── fig2_ac_Caso_2:_Alfa_(8Hz)_+_Gamm.png
+│   │   ├── fig2_ac_Caso_3:_DHO_alfa_(γ=0.02,.png
+│   │   ├── fig2_ac_Caso_3:_DHO_alfa_estocást.png
+│   │   ├── fig2_ac_Caso_4:_DHO_alto_Q_(γ=0.0.png
+│   │   ├── fig2_ac_Caso_4a:_Oscilador_puro_+.png
+│   │   ├── fig2_ac_Caso_4b:_Alfa+Gamma_+_Rui.png
+│   │   ├── fig2_ac_Caso_5:_DHO_alfa_+_Ruido_.png
+│   │   ├── fig2_ac_Caso_5:_Oscilación_Alfa_+.png
+│   │   ├── fig2_ac_Caso_6:_Dos_DHOs_(Alfa_8H.png
+│   │   ├── fig2_ac_Caso_6:_Dos_DHOs_(alfa_8H.png
+│   │   ├── fig2_ac_Caso_6b:_Dos_DHOs_+_Ruido.png
+│   │   ├── fig2_ac_Caso_7:_Proceso_OU_puro_(.png
+│   │   ├── fig2_ac_Izhikevich_–_D=0ms___(in-.png
+│   │   ├── fig2_ac_Izhikevich_–_D=26ms__(val.png
+│   │   ├── fig2_ac_Izhikevich_–_D=44ms__(ant.png
+│   │   ├── fig2_ac_Izhikevich_–_D=65ms__(ópt.png
+│   │   ├── fig2_ac_Izhikevich_–_D=95ms__(re-.png
+│   │   ├── fig2_ac_SNN_Izhikevich_–_D=0ms___.png
+│   │   ├── fig2_ac_SNN_Izhikevich_–_D=26ms__.png
+│   │   ├── fig2_ac_SNN_Izhikevich_–_D=44ms__.png
+│   │   ├── fig2_ac_SNN_Izhikevich_–_D=65ms__.png
+│   │   ├── fig2_ac_SNN_Izhikevich_–_D=95ms__.png
+│   │   ├── heatmap_global.png
+│   │   ├── int_empirical_vs_fitted.png
+│   │   └── paradox_Q_sweep.png
+│   ├── data_analysis
+│   │   ├── distros
+│   │   └── refined_th_healthy_0.0_22.12.25.csv
+│   ├── debug_cases_20260204_0433
+│   ├── debug_cases_20260204_0441
+│   │   ├── AI_psd.png
+│   │   ├── AI_raster.png
+│   │   ├── S_osc_psd.png
+│   │   └── S_osc_raster.png
+│   ├── debug_cases_20260204_0443
+│   │   ├── AI_psd.png
+│   │   ├── AI_raster.png
+│   │   ├── SO_high_psd.png
+│   │   ├── SO_high_raster.png
+│   │   ├── S_osc_psd.png
+│   │   └── S_osc_raster.png
+│   ├── debug_cases_20260204_0449
+│   │   ├── AI_psd.png
+│   │   └── AI_raster.png
+│   ├── experiments
+│   │   ├── k_sweep_high_res
+│   │   └── symmetric_delay_sweep
+│   ├── logs
+│   │   ├── analysis_sweep_3d_20260126_132259.log
+│   │   ├── analysis_sweep_3d_20260127_014808.log
+│   │   ├── analysis_sweep_3d_20260127_020758.log
+│   │   ├── analysis_sweep_3d_20260127_024823.log
+│   │   ├── analysis_sweep_3d_20260127_120125.log
+│   │   ├── analysis_sweep_3d_20260127_184412.log
+│   │   ├── analysis_sweep_3d_20260127_201738.log
+│   │   ├── analysis_sweep_3d_20260127_212445.log
+│   │   ├── analysis_sweep_3d_20260127_213526.log
+│   │   ├── analysis_sweep_3d_20260127_220006.log
+│   │   ├── analysis_sweep_3d_20260127_221604.log
+│   │   ├── analysis_sweep_3d_20260127_221628.log
+│   │   ├── analysis_sweep_3d_20260127_225442.log
+│   │   ├── analysis_sweep_3d_20260127_225852.log
+│   │   ├── analysis_sweep_3d_20260127_230958.log
+│   │   ├── analysis_sweep_3d_20260127_234323.log
+│   │   ├── analysis_sweep_3d_20260127_234444.log
+│   │   ├── analysis_sweep_3d_20260127_235643.log
+│   │   ├── analysis_sweep_3d_20260128_001947.log
+│   │   ├── analysis_sweep_3d_20260128_002012.log
+│   │   ├── analysis_sweep_3d_20260128_002030.log
+│   │   ├── analysis_sweep_3d_20260128_002154.log
+│   │   ├── analysis_sweep_3d_20260128_002415.log
+│   │   ├── analysis_sweep_3d_20260128_002918.log
+│   │   ├── analysis_sweep_3d_20260130_155955.log
+│   │   ├── analysis_sweep_3d_20260130_160826.log
+│   │   ├── analysis_sweep_3d_20260204_161549.log
+│   │   ├── analysis_sweep_3d_20260204_162619.log
+│   │   ├── analysis_sweep_3d_20260204_165441.log
+│   │   ├── analysis_sweep_3d_20260204_185010.log
+│   │   ├── analysis_sweep_3d_20260204_192020.log
+│   │   ├── analysis_sweep_3d_20260204_192138.log
+│   │   ├── analysis_sweep_3d_20260205_145324.log
+│   │   ├── analysis_sweep_3d_20260205_145522.log
+│   │   ├── analysis_sweep_3d_20260205_145622.log
+│   │   ├── analysis_sweep_3d_20260205_154150.log
+│   │   ├── analysis_sweep_3d_20260205_163125.log
+│   │   ├── analysis_sweep_3d_20260205_164334.log
+│   │   ├── analysis_sweep_3d_20260205_164600.log
+│   │   ├── analysis_sweep_3d_20260205_165022.log
+│   │   ├── analysis_sweep_3d_20260205_165322.log
+│   │   ├── analysis_sweep_3d_20260205_165503.log
+│   │   ├── analysis_sweep_3d_20260205_165706.log
+│   │   ├── analysis_sweep_3d_20260205_170509.log
+│   │   ├── analysis_sweep_3d_20260205_170534.log
+│   │   ├── analysis_sweep_3d_20260205_170959.log
+│   │   ├── analysis_sweep_3d_20260205_190955.log
+│   │   ├── analysis_sweep_3d_20260205_203303.log
+│   │   ├── analysis_sweep_3d_20260206_151806.log
+│   │   ├── analysis_sweep_3d_20260208_125135.log
+│   │   ├── analysis_sweep_3d_20260208_185730.log
+│   │   ├── analysis_sweep_3d_20260209_000102.log
+│   │   ├── analysis_sweep_3d_20260227_193216.log
+│   │   ├── analysis_sweep_3d_20260303_203023.log
+│   │   ├── analysis_sweep_3d_20260303_210809.log
+│   │   ├── analysis_sweep_3d_20260303_220509.log
+│   │   ├── analysis_sweep_3d_20260303_221058.log
+│   │   ├── analysis_sweep_3d_20260304_020327.log
+│   │   ├── analysis_sweep_3d_20260304_122838.log
+│   │   ├── analysis_sweep_3d_20260304_125244.log
+│   │   ├── analysis_sweep_3d_20260304_133458.log
+│   │   ├── analysis_sweep_3d_20260304_152654.log
+│   │   ├── analysis_sweep_3d_20260304_174021.log
+│   │   ├── analysis_sweep_3d_20260305_175303.log
+│   │   ├── analysis_sweep_3d_20260306_191839.log
+│   │   ├── analysis_sweep_3d_20260306_194425.log
+│   │   ├── analysis_sweep_3d_20260331_181911.log
+│   │   ├── launch_sweep.sh.e30967129
+│   │   ├── launch_sweep.sh.e31007446
+│   │   ├── launch_sweep.sh.e31145882
+│   │   ├── launch_sweep.sh.e31147100
+│   │   ├── launch_sweep.sh.e31149021
+│   │   ├── launch_sweep.sh.e31152154
+│   │   ├── launch_sweep.sh.e31191451
+│   │   ├── launch_sweep.sh.e31441877
+│   │   ├── launch_sweep.sh.e31441878
+│   │   ├── launch_sweep.sh.e31441879
+│   │   ├── launch_sweep.sh.e31441880
+│   │   ├── launch_sweep.sh.e31441881
+│   │   ├── launch_sweep.sh.e31441882
+│   │   ├── launch_sweep.sh.e31445505
+│   │   ├── launch_sweep.sh.e31447056
+│   │   ├── launch_sweep.sh.e31447058
+│   │   ├── launch_sweep.sh.e31447059
+│   │   ├── launch_sweep.sh.e31458628
+│   │   ├── launch_sweep.sh.e31458629
+│   │   ├── launch_sweep.sh.e31500355
+│   │   ├── launch_sweep.sh.e31679519
+│   │   ├── launch_sweep.sh.e31679524
+│   │   ├── launch_sweep.sh.e31679525
+│   │   ├── launch_sweep.sh.e31679526
+│   │   ├── launch_sweep.sh.e31921717
+│   │   ├── launch_sweep.sh.e32910139
+│   │   ├── launch_sweep.sh.o30967129
+│   │   ├── launch_sweep.sh.o31007446
+│   │   ├── launch_sweep.sh.o31133991
+│   │   ├── launch_sweep.sh.o31145882
+│   │   ├── launch_sweep.sh.o31147100
+│   │   ├── launch_sweep.sh.o31149021
+│   │   ├── launch_sweep.sh.o31152154
+│   │   ├── launch_sweep.sh.o31191425
+│   │   ├── launch_sweep.sh.o31191451
+│   │   ├── launch_sweep.sh.o31441877
+│   │   ├── launch_sweep.sh.o31441878
+│   │   ├── launch_sweep.sh.o31441879
+│   │   ├── launch_sweep.sh.o31441880
+│   │   ├── launch_sweep.sh.o31441881
+│   │   ├── launch_sweep.sh.o31441882
+│   │   ├── launch_sweep.sh.o31445505
+│   │   ├── launch_sweep.sh.o31447056
+│   │   ├── launch_sweep.sh.o31447058
+│   │   ├── launch_sweep.sh.o31447059
+│   │   ├── launch_sweep.sh.o31458628
+│   │   ├── launch_sweep.sh.o31458629
+│   │   ├── launch_sweep.sh.o31500355
+│   │   ├── launch_sweep.sh.o31679519
+│   │   ├── launch_sweep.sh.o31679524
+│   │   ├── launch_sweep.sh.o31679525
+│   │   ├── launch_sweep.sh.o31679526
+│   │   ├── launch_sweep.sh.o31921717
+│   │   ├── launch_sweep.sh.o31925931
+│   │   ├── launch_sweep.sh.o32910139
+│   │   ├── propagation_analysis_20260213_170944.log
+│   │   ├── sweep_3d_autocorr_20260119_041436.log
+│   │   ├── sweep_3d_autocorr_20260119_042424.log
+│   │   ├── sweep_3d_autocorr_20260119_043745.log
+│   │   ├── sweep_3d_autocorr_20260119_151911.log
+│   │   ├── sweep_3d_autocorr_20260120_220102.log
+│   │   ├── sweep_3d_autocorr_20260120_220320.log
+│   │   ├── sweep_3d_autocorr_20260120_220608.log
+│   │   ├── sweep_3d_autocorr_20260120_221719.log
+│   │   ├── sweep_3d_autocorr_20260120_223800.log
+│   │   ├── sweep_3d_autocorr_20260120_224041.log
+│   │   ├── sweep_3d_autocorr_20260120_224258.log
+│   │   ├── sweep_3d_autocorr_20260120_225130.log
+│   │   ├── sweep_3d_autocorr_20260120_225520.log
+│   │   ├── sweep_3d_autocorr_20260120_231921.log
+│   │   ├── sweep_3d_autocorr_20260120_233916.log
+│   │   ├── sweep_3d_autocorr_20260121_004238.log
+│   │   ├── sweep_3d_autocorr_20260121_142951.log
+│   │   ├── sweep_3d_autocorr_20260126_003924.log
+│   │   ├── sweep_3d_autocorr_20260126_004608.log
+│   │   ├── sweep_3d_autocorr_20260126_004725.log
+│   │   ├── sweep_3d_autocorr_20260126_010306.log
+│   │   ├── sweep_3d_autocorr_20260126_010455.log
+│   │   ├── sweep_3d_autocorr_20260126_012905.log
+│   │   ├── sweep_3d_autocorr_20260126_014626.log
+│   │   ├── sweep_3d_autocorr_20260126_020353.log
+│   │   ├── sweep_3d_autocorr_20260126_020354.log
+│   │   ├── sweep_3d_autocorr_20260126_120641.log
+│   │   ├── sweep_3d_autocorr_20260128_005545.log
+│   │   ├── sweep_3d_autocorr_20260128_005617.log
+│   │   ├── sweep_3d_autocorr_gamma_20260303_190145.log
+│   │   ├── sweep_3d_autocorr_gamma_20260304_110725.log
+│   │   ├── sweep_3d_autocorr_gamma_20260304_164321.log
+│   │   ├── sweep_3d_autocorr_gamma_20260306_013010.log
+│   │   ├── sweep_3d_autocorr_gamma_20260320_144455.log
+│   │   ├── sweep_3d_autocorr_gamma_20260323_154826.log
+│   │   ├── sweep_3d_autocorr_gamma_20260331_195055.log
+│   │   ├── sweep_3d_autocorr_gamma_20260331_195444.log
+│   │   ├── sweep_3d_autocorr_gamma_20260331_195925.log
+│   │   ├── sweep_3d_autocorr_gamma_20260408_163128.log
+│   │   ├── sweep_3d_autocorr_gamma_20260408_163420.log
+│   │   └── sweep_3d_autocorr_gamma_20260408_164443.log
+│   ├── phase_space_dashboard.png
+│   ├── spike_propagation_2d
+│   │   ├── heatmaps_2d.png
+│   │   ├── heatmaps_2d_optimized.png
+│   │   ├── network_contribution.png
+│   │   ├── network_contribution_summary.csv
+│   │   ├── slices_1d.png
+│   │   ├── sweep_2d_20260114_042146.pkl
+│   │   ├── sweep_2d_20260115_171249
+│   │   ├── sweep_2d_20260115_202834
+│   │   ├── sweep_2d_20260116_001143
+│   │   ├── sweep_2d_20260116_011223
+│   │   ├── sweep_2d_20260116_022600
+│   │   ├── sweep_2d_20260116_025857
+│   │   ├── sweep_2d_20260116_174324
+│   │   ├── sweep_2d_20260211_124552
+│   │   ├── sweep_2d_20260211_125135
+│   │   ├── sweep_2d_20260211_125439
+│   │   ├── sweep_2d_20260211_125640
+│   │   ├── sweep_2d_20260211_125733
+│   │   ├── sweep_2d_20260211_125748
+│   │   ├── sweep_2d_20260211_125816
+│   │   ├── sweep_2d_20260211_125829
+│   │   ├── sweep_2d_20260211_125844
+│   │   ├── sweep_2d_20260211_125855
+│   │   ├── sweep_2d_20260211_125918
+│   │   ├── sweep_2d_20260211_125934
+│   │   ├── sweep_2d_20260211_130004
+│   │   ├── sweep_2d_20260211_130328
+│   │   ├── sweep_2d_20260211_130342
+│   │   ├── sweep_2d_20260211_130409
+│   │   ├── sweep_2d_20260211_132342
+│   │   ├── sweep_2d_20260211_133758
+│   │   ├── sweep_2d_20260211_135414
+│   │   ├── sweep_2d_20260211_141115
+│   │   ├── sweep_2d_20260211_141223
+│   │   └── sweep_2d_20260216_134903
+│   ├── sweep_3d_autocorr_20260119_151911
+│   │   ├── _BACKUP_OLD_SYSTEM_20260303_205005
+│   │   ├── casos_particulares
+│   │   ├── config.json
+│   │   ├── diagnostics
+│   │   ├── kinter_vs_delay_tau.png
+│   │   ├── metadata.json
+│   │   ├── metrics_3d
+│   │   ├── plots_analysis
+│   │   ├── plots_progress
+│   │   ├── raster_fr_by_population.png
+│   │   ├── raster_fr_psd_by_type.png
+│   │   ├── raw_spikes
+│   │   ├── simulation_index.csv
+│   │   ├── summary_statistics.json
+│   │   ├── tau_comparison_A_vs_B.png
+│   │   ├── tau_distributions.png
+│   │   ├── tau_vs_coupling_avg.png
+│   │   ├── tau_vs_coupling_delay_-1.png
+│   │   ├── tau_vs_delay.png
+│   │   ├── tau_vs_delay_fixed_kinter.png
+│   │   ├── tau_vs_delay_full_avg.png
+│   │   ├── tau_vs_delay_k2.6_r1.0.png
+│   │   ├── tau_vs_delay_k6.6_r0.5.png
+│   │   ├── tau_vs_delay_k7.9_r0.5.png
+│   │   ├── tau_vs_kinter_K2.6_avg_delay.png
+│   │   ├── tau_vs_kinter_K2.6_d0ms.png
+│   │   ├── tau_vs_kinter_K2.6_d10ms.png
+│   │   ├── tau_vs_kinter_K2.6_d20ms.png
+│   │   ├── tau_vs_kinter_K2.6_d30ms.png
+│   │   ├── tau_vs_kinter_K2.6_d40ms.png
+│   │   ├── tau_vs_kinter_K2.6_d50ms.png
+│   │   ├── tau_vs_kinter_K2.6_d60ms.png
+│   │   ├── tau_vs_kinter_K3.9_d0ms.png
+│   │   ├── tau_vs_kinter_K3.9_d10ms.png
+│   │   ├── tau_vs_kinter_K3.9_d20ms.png
+│   │   ├── tau_vs_kinter_K3.9_d30ms.png
+│   │   ├── tau_vs_kinter_K3.9_d40ms.png
+│   │   ├── tau_vs_kinter_K3.9_d50ms.png
+│   │   ├── tau_vs_kinter_K3.9_d60ms.png
+│   │   ├── tau_vs_kinter_kintra2.6.png
+│   │   ├── tau_vs_kinter_ratio_comparison.png
+│   │   ├── tau_vs_kinter_sliced.png
+│   │   ├── tau_vs_kinter_stratified.png
+│   │   ├── validation_issues.json
+│   │   └── validation_report.png
+│   ├── sweep_3d_autocorr_alpha20260304_110725
+│   │   ├── casos_particulares
+│   │   ├── checkpoint_batch19.pkl
+│   │   ├── checkpoint_batch9.pkl
+│   │   ├── config.json
+│   │   ├── diagnostics
+│   │   ├── metadata.json
+│   │   ├── metrics_3d
+│   │   ├── plots_analysis
+│   │   ├── plots_progress
+│   │   ├── raw_spikes
+│   │   ├── simulation_index.csv
+│   │   ├── summary_statistics.json
+│   │   ├── tau_vs_delay_k5.8_r0.5.png
+│   │   ├── tau_vs_kinter_K4.2_d0ms.png
+│   │   ├── tau_vs_kinter_K4.2_d10ms.png
+│   │   ├── tau_vs_kinter_K4.2_d20ms.png
+│   │   ├── tau_vs_kinter_K4.2_d30ms.png
+│   │   ├── tau_vs_kinter_K4.2_d40ms.png
+│   │   ├── tau_vs_kinter_K4.2_d50ms.png
+│   │   ├── tau_vs_kinter_K4.2_d60ms.png
+│   │   ├── validation_issues.json
+│   │   └── validation_report.png
+│   ├── sweep_3d_autocorr_deep20260320_144455
+│   │   ├── casos_particulares
+│   │   ├── checkpoint_batch14.pkl
+│   │   ├── checkpoint_batch19.pkl
+│   │   ├── checkpoint_batch24.pkl
+│   │   ├── checkpoint_batch29.pkl
+│   │   ├── checkpoint_batch4.pkl
+│   │   ├── checkpoint_batch9.pkl
+│   │   ├── config.json
+│   │   ├── diagnostics
+│   │   ├── metadata.json
+│   │   ├── metrics_3d
+│   │   ├── plots_progress
+│   │   ├── raw_spikes
+│   │   ├── summary_statistics.json
+│   │   ├── validation_issues.json
+│   │   └── validation_report.png
+│   ├── sweep_3d_autocorr_extended20260331_195444
+│   │   ├── casos_particulares
+│   │   ├── checkpoint_batch14.pkl
+│   │   ├── checkpoint_batch19.pkl
+│   │   ├── checkpoint_batch24.pkl
+│   │   ├── checkpoint_batch29.pkl
+│   │   ├── checkpoint_batch34.pkl
+│   │   ├── checkpoint_batch39.pkl
+│   │   ├── checkpoint_batch4.pkl
+│   │   ├── checkpoint_batch9.pkl
+│   │   ├── config.json
+│   │   ├── diagnostics
+│   │   ├── metadata.json
+│   │   ├── metrics_3d
+│   │   ├── plots_progress
+│   │   └── raw_spikes
+│   ├── sweep_3d_autocorr_master_slave20260331_195925
+│   │   ├── casos_particulares
+│   │   ├── checkpoint_batch14.pkl
+│   │   ├── checkpoint_batch19.pkl
+│   │   ├── checkpoint_batch4.pkl
+│   │   ├── checkpoint_batch9.pkl
+│   │   ├── config.json
+│   │   ├── diagnostics
+│   │   ├── metadata.json
+│   │   ├── metrics_3d
+│   │   ├── plots_progress
+│   │   └── raw_spikes
+│   └── sweep_3d_autocorr_master_slave20260408_163420
+├── src
+│   ├── single_population
+│   │   ├── analysis.py
+│   │   ├── main.ipynb
+│   │   ├── optimization.py
+│   │   ├── parameter_sweep.py
+│   │   └── simulation.py
+│   ├── theoretical
+│   │   ├── analysis.py
+│   │   └── bifurcation_comparison.py
+│   └── two_populations
+│       ├── __pycache__
+│       ├── helpers
+│       ├── metrics.py
+│       ├── model.py
+│       ├── old
+│       ├── plots
+│       └── sweep.py
+└── str.txt
+
+127 directories, 663 files
