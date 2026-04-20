@@ -280,7 +280,7 @@ def plot_population_dashboard(results_dict, figsize=(20, 11)):
     for condition, res in valid_results.items():
         psd_A = res.get('psd_A', res.get('power_A', {}))
         if len(psd_A.get('freqs', [])) > 0:
-            ax2.plot(psd_A['freqs'], psd_A['psd'], label=f"{condition} A", alpha=0.9, lw=1.5, color='steelblue')
+            ax2.plot(psd_A['freqs'], psd_A['psd'], label=f"{condition} A", alpha=0.9, lw=1.5, color='steelblue') #TODO SEMILOG ARG
             ax2.fill_between(psd_A['freqs'], 0, psd_A['psd'], alpha=0.5, facecolor='steelblue')
         
         if not single_pop:
