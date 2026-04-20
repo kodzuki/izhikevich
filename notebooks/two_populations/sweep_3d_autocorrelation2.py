@@ -62,48 +62,42 @@ logger = setup_logger(
 
 logger.info(f"Working directory: {Path.cwd()}")
 
-
-# In[2]:
-
-
 # =============================================================================
 # CONFIGURACIÓN DEL BARRIDO
 # =============================================================================
 
 # 1. Definición de la Grilla (CORREGIDO: Usando linspace para puntos exactos)
 # Queremos 50 puntos entre 20.0 y 25.0
-K_INTRA_VALUES = np.linspace(0.0, 10.0, 20)  
-# Queremos 50 puntos entre 0.8 y 1.0
-K_INTER_RATIOS = np.linspace(0.0, 1.0, 20)   
-# Queremos 5 delays representativos (ej: 0, 5, 10, 20, 40 ms)
-# O si prefieres lineal: np.linspace(0, 40, 5) -> [0, 10, 20, 30, 40]
-DELAY_VALUES = np.linspace(0.0, 50.0, 20) # Ajusta según preferencia
+K_INTRA_VALUES = np.linspace(0.0, 20.0, 20)
+K_INTER_RATIOS = np.linspace(0.0, 1.0, 20)        # paso 0.05
+DELAY_VALUES   = np.linspace(0.0, 125.0, 20)      # paso 2.5ms
 
 POPULATION_PARAMS = {
     'Ne': 800, 'Ni': 200,
     'noise_exc': 0.88, 'noise_inh': 0.6,
     'p_intra': 0.1, 'p_inter': 0.02,
-    'delay_intra': 1.0,
+    'delay_intra': 0.0,
     'rate_hz': 10.0,
     'stim_base': 1.0
 }
 
 SIM_CONFIG = {
-    'batch_size': 360,  # Número de simulaciones por batch
-    'n_jobs': 64,
+    'batch_size': 200,
+    'n_jobs': 63,
     'dt_ms': 0.1,
-    'T_ms': 3500,       # Aumentado a 4s como pediste
-    'warmup_ms': 500,  # Aumentamos warmup a 1s para asegurar estado estable
-    'n_trials': 3,      # 5 Trials por punto
-    'checkpoint_every': 10,  # Guardar arrays cada X batches
-    'plot_every': 10    # Plotear progreso cada X batches
+    'T_ms': 3500,       # 10s útiles tras warmup
+    'warmup_ms': 500,
+    'n_trials': 3,
+    'checkpoint_every': 5,
+    'plot_every': 5
 }
 
 AC_CONFIG = {
-    'max_lag_ms': 250,
+    'max_lag_ms': 300,   # cubre dos períodos alfa completos
     'analysis_dt': 0.5,
 }
 
+LFP_DT_MS = 0.5  # debe coincidir con record_v_dt
 
 # Crear todas las configuraciones
 configs = []
@@ -123,38 +117,33 @@ logger.info(f"Grid: {len(K_INTRA_VALUES)} × {len(K_INTER_RATIOS)} × {len(DELAY
 logger.info(f"Total configs: {n_configs}")
 logger.info(f"Total sims: {n_total_sims} ({SIM_CONFIG['n_trials']} trials/config)")
 
-
-# In[3]:
-
-
 # =============================================================================
 # SETUP DE ALMACENAMIENTO
 # =============================================================================
 
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-output_dir = Path(f"./results/sweep_3d_autocorr_alpha{timestamp}")
-output_dir.mkdir(parents=True, exist_ok=True)
+# output_dir = Path(f"./results/sweep_3d_autocorr_gamma_{timestamp}")
+# output_dir.mkdir(parents=True, exist_ok=True)
 
-(output_dir / "raw_spikes").mkdir(exist_ok=True)
-(output_dir / "metrics_3d").mkdir(exist_ok=True)
-(output_dir / "plots_progress").mkdir(exist_ok=True)
-(output_dir / "casos_particulares").mkdir(exist_ok=True)
-(output_dir / "diagnostics").mkdir(exist_ok=True)
+# (output_dir / "raw_spikes").mkdir(exist_ok=True)
+# (output_dir / "metrics_3d").mkdir(exist_ok=True)
+# (output_dir / "plots_progress").mkdir(exist_ok=True)
+# (output_dir / "casos_particulares").mkdir(exist_ok=True)
+# (output_dir / "diagnostics").mkdir(exist_ok=True)
 
 # =============================================================================
 # SETUP DE ALMACENAMIENTO (MODO RESUME)
 # =============================================================================
 
-# 🛑 IMPORTANTE: Pon aquí la ruta EXACTA del job que falló al 75%
-# Ejemplo: "results/sweep_3d_autocorr_20260119_043745"
-# output_dir = Path("./results/sweep_3d_autocorr_20260121_004238") 
+# # 🛑 IMPORTANTE: Pon aquí la ruta EXACTA del job que falló al 75%
+output_dir = Path("./results/sweep_3d_autocorr_gamma_20260416_024714") 
 
-# # Aseguramos que existan las subcarpetas (por si acaso)
-# (output_dir / "raw_spikes").mkdir(parents=True, exist_ok=True)
-# (output_dir / "metrics_3d").mkdir(exist_ok=True)
-# (output_dir / "plots_progress").mkdir(exist_ok=True)
+# Aseguramos que existan las subcarpetas (por si acaso)
+(output_dir / "raw_spikes").mkdir(parents=True, exist_ok=True)
+(output_dir / "metrics_3d").mkdir(exist_ok=True)
+(output_dir / "plots_progress").mkdir(exist_ok=True)
 
-# logger.info(f"📂 RESUMIENDO TRABAJO EN: {output_dir}")
+logger.info(f"📂 RESUMIENDO TRABAJO EN: {output_dir}")
 
 # Guardar configuración
 config_dict = {
@@ -176,14 +165,24 @@ with open(output_dir / "config.json", 'w') as f:
 shape_3d = (len(K_INTRA_VALUES), len(K_INTER_RATIOS), len(DELAY_VALUES))
 
 arrays_3d = {
+    # Existentes
     'tau_int_A': np.full(shape_3d, np.nan),
-    'tau_int_B': np.full(shape_3d, np.nan),
     'tau_int_A_std': np.full(shape_3d, np.nan),
-    'tau_int_B_std': np.full(shape_3d, np.nan),
-    'ac_peak_A': np.full(shape_3d, np.nan),
-    'ac_peak_B': np.full(shape_3d, np.nan),
     'mean_rate_A': np.full(shape_3d, np.nan),
+    # Nuevos
+    'freq_dominant_A': np.full(shape_3d, np.nan),
+    'freq_dominant_A_std': np.full(shape_3d, np.nan),
+    # Idem para B
+    'tau_int_B': np.full(shape_3d, np.nan),
+    'tau_int_B_std': np.full(shape_3d, np.nan),
     'mean_rate_B': np.full(shape_3d, np.nan),
+    'freq_dominant_B': np.full(shape_3d, np.nan),
+    'freq_dominant_B_std': np.full(shape_3d, np.nan),
+    # Añadir al dict arrays_3d junto a los otros campos:
+    'tau_int_lfp_A':     np.full(shape_3d, np.nan),
+    'tau_int_lfp_A_std': np.full(shape_3d, np.nan),
+    'tau_int_lfp_B':     np.full(shape_3d, np.nan),
+    'tau_int_lfp_B_std': np.full(shape_3d, np.nan),
 }
 
 
@@ -200,8 +199,63 @@ with open(output_dir / "metadata.json", 'w') as f:
 logger.success(f"Output directory: {output_dir}")
 
 
-# In[4]:
+def compute_lfp_signal(v_traces, warmup_ms, dt_ms):
+    """
+    v_traces: array (n_exc_sampled, n_timepoints) — solo excitatorias
+    Devuelve LFP proxy como promedio de potenciales de membrana excitatorios.
+    """
+    lfp = np.mean(v_traces, axis=0)          # promedio sobre neuronas
+    n_warmup = int(warmup_ms / dt_ms)
+    return lfp[n_warmup:]                     # descarta warmup
 
+
+def compute_psd_from_lfp(lfp, dt_ms, freq_min=1.0, freq_max=80.0):
+    """
+    PSD Welch sobre LFP. Usa ventana de min(3s, T_útil) para resolución df≤0.33Hz.
+    Devuelve (freqs, psd) recortado a [freq_min, freq_max].
+    """
+    from scipy.signal import welch
+    fs = 1000.0 / dt_ms                          # sampling rate en Hz
+    # ventana de 3s para df=0.33Hz; si señal más corta usa lo que haya
+    nperseg = min(int(fs * 3.0), len(lfp))
+    # con 10s útiles: nperseg=6000 (3s), df=0.167Hz — resolución cómoda
+    freqs, psd = welch(lfp, fs=fs, nperseg=nperseg, noverlap=nperseg // 2,
+                       window='hann', scaling='density')
+    mask = (freqs >= freq_min) & (freqs <= freq_max)
+    return freqs[mask], psd[mask]
+
+
+def get_dominant_freq(freqs, psd, f_low=5.0, f_high=15.0):
+    """Frecuencia del pico focal en [f_low, f_high] Hz sobre el PSD del LFP."""
+    mask = (freqs >= f_low) & (freqs <= f_high)
+    if not np.any(mask) or np.all(psd[mask] == 0):
+        return np.nan
+    return float(freqs[mask][np.argmax(psd[mask])])
+
+
+def compute_int_from_lfp(lfp, dt_ms, max_lag_ms=250.0, threshold=0.1):
+    """
+    INT calculada sobre LFP: área bajo la autocorrelación normalizada hasta
+    primer cruce del umbral (equivalente a tau_int sobre spike rate).
+    """
+    from scipy.signal import correlate
+    n = len(lfp)
+    lfp_z = lfp - np.mean(lfp)                  # centrar
+    # autocorrelación completa, normalizada
+    ac_full = correlate(lfp_z, lfp_z, mode='full')
+    ac_full = ac_full / ac_full[n - 1]           # normalizar en lag=0
+    ac_pos = ac_full[n - 1:]                     # lags positivos
+    
+    max_lag_pts = int(max_lag_ms / dt_ms)
+    ac_pos = ac_pos[:max_lag_pts]
+    lags = np.arange(len(ac_pos)) * dt_ms
+    
+    # primer cruce del umbral
+    cross = np.where(ac_pos <= threshold)[0]
+    end_idx = cross[0] if len(cross) > 0 else len(ac_pos)
+    
+    tau_int = float(np.trapezoid(ac_pos[:end_idx], lags[:end_idx]))
+    return tau_int, ac_pos, lags
 
 # =============================================================================
 # FUNCIONES DE CÁLCULO ON-THE-FLY
@@ -262,7 +316,7 @@ def run_single_simulation(config, trial, base_seed=100):
     
     # 🛑 2. HACK ANTI-BLOQUEO (CRÍTICO: ESTO FALTABA)
     # Fuerza modo Python puro. Sin esto, 32 procesos intentan compilar C++ a la vez y se bloquean.
-    #prefs.codegen.target = 'numpy'  
+    prefs.codegen.target = 'numpy'  
     
     start_scope() # Inicia el ámbito de Brian2
     
@@ -321,45 +375,92 @@ def run_single_simulation(config, trial, base_seed=100):
             
         
         # Monitores (solo spikes)
-        net.setup_monitors(['A', 'B'], record_v_dt=0.5, sample_fraction=0, 
+        net.setup_monitors(['A', 'B'], record_v_dt=0.5, sample_fraction=0.1, 
                         monitor_conductance=False)
         
-        # Simular
+                # Simular
         results = net.run_simulation()
-        
+
         # Extraer spikes
-        spikes_A = {
-            'times': results['A']['spike_times'],
-            'neurons': results['A']['spike_indices']
-        }
-        spikes_B = {
-            'times': results['B']['spike_times'],
-            'neurons': results['B']['spike_indices']
-        }
-        
-        # Calcular métricas
-        metrics_A = compute_autocorr_and_timescales(
-            spikes_A['times'], spikes_A['neurons'],
-            POPULATION_PARAMS['Ne'] + POPULATION_PARAMS['Ni'],
-            SIM_CONFIG['warmup_ms'], SIM_CONFIG['T_ms'],
-            AC_CONFIG['analysis_dt'], AC_CONFIG['max_lag_ms']
-        )
-        
-        metrics_B = compute_autocorr_and_timescales(
-            spikes_B['times'], spikes_B['neurons'],
-            POPULATION_PARAMS['Ne'] + POPULATION_PARAMS['Ni'],
-            SIM_CONFIG['warmup_ms'], SIM_CONFIG['T_ms'],
-            AC_CONFIG['analysis_dt'], AC_CONFIG['max_lag_ms']
-        )
-        
+        spikes_A = {'times': results['A']['spike_times'], 'neurons': results['A']['spike_indices']}
+        spikes_B = {'times': results['B']['spike_times'], 'neurons': results['B']['spike_indices']}
+
+        def _compute_all_metrics(spikes, results_pop, pop_name):
+            N = POPULATION_PARAMS['Ne'] + POPULATION_PARAMS['Ni']
+
+            # --- Spike rate (idéntico al sweep anterior) ---
+            time, rate = spikes_to_population_rate(
+                type('obj', (), {'t': spikes['times'] * ms, 'i': spikes['neurons']})(),
+                N, smooth_window=1, analysis_dt=AC_CONFIG['analysis_dt'],
+                T_total=SIM_CONFIG['T_ms']
+            )
+            mask = time >= SIM_CONFIG['warmup_ms']
+            rate_filt = rate[mask]
+            mean_rate = float(np.mean(rate_filt))
+
+            # Métricas de spikes — conservadas para compatibilidad
+            ac_result = cross_correlation_analysis(
+                rate_filt, rate_filt,
+                max_lag_ms=AC_CONFIG['max_lag_ms'],
+                dt=AC_CONFIG['analysis_dt']
+            )
+            ts_result = intrinsic_timescale_analysis(
+                rate_filt,
+                max_lag_ms=AC_CONFIG['max_lag_ms'],
+                dt=AC_CONFIG['analysis_dt']
+            )
+
+            out = {
+                # ── campos legacy (compatibles con notebook anterior) ──
+                'tau_int':  ts_result['tau_int'],
+                'ac_peak':  ac_result['peak_value'],
+                'ac_lags':  ac_result['lags'],
+                'ac_corr':  ac_result['correlation'],
+                'mean_rate': mean_rate,
+                'quality':  ts_result['quality'],
+            }
+
+            # --- LFP proxy (nuevo, adicional) ---
+            v_mon = results_pop.get('voltage_monitor', None)
+            if v_mon is not None and hasattr(v_mon, 'v') and v_mon.v.shape[0] > 0:
+                v_traces = np.array(v_mon.v)
+                lfp = compute_lfp_signal(v_traces, SIM_CONFIG['warmup_ms'], LFP_DT_MS)
+
+                tau_int_lfp, ac_pos_lfp, lags_lfp = compute_int_from_lfp(
+                    lfp, dt_ms=LFP_DT_MS,
+                    max_lag_ms=AC_CONFIG['max_lag_ms'],
+                    threshold=0.1
+                )
+                psd_freqs, psd_power = compute_psd_from_lfp(lfp, dt_ms=LFP_DT_MS)
+                freq_dom = get_dominant_freq(psd_freqs, psd_power, f_low=5.0, f_high=15.0)
+
+                out.update({
+                    # ── campos nuevos (LFP-based) ──
+                    'tau_int_lfp':    tau_int_lfp,
+                    'freq_dominant':  freq_dom,
+                    'lfp_mean':       lfp.astype(np.float32),
+                    'psd_freqs':      psd_freqs.astype(np.float32),
+                    'psd_power':      psd_power.astype(np.float32),
+                    'ac_lags_lfp':    lags_lfp.astype(np.float32),
+                    'ac_corr_lfp':    ac_pos_lfp.astype(np.float32),
+                })
+            else:
+                out.update({
+                    'tau_int_lfp':   np.nan,
+                    'freq_dominant': np.nan,
+                })
+
+            return out
+
+        metrics_A = _compute_all_metrics(spikes_A, results['A'], 'A')
+        metrics_B = _compute_all_metrics(spikes_B, results['B'], 'B')
+
         return {
-            'config': config,
-            'trial': trial,
-            'spikes_A': spikes_A,
-            'spikes_B': spikes_B,
-            'metrics_A': metrics_A,
-            'metrics_B': metrics_B
+            'config': config, 'trial': trial,
+            'spikes_A': spikes_A, 'spikes_B': spikes_B,
+            'metrics_A': metrics_A, 'metrics_B': metrics_B
         }
+        
         
     except Exception as e:
         # Capturar error sin romper el worker
@@ -469,20 +570,6 @@ def plot_ac_diagnostic(h5_file, sim_key, output_dir):
     axes[0,1].legend()
     axes[0,1].grid(alpha=0.3)
     
-    # 3. Fit exponencial
-    # axes[1,0].plot(lags_pos, corr_pos, 'k-', linewidth=2, label='AC')
-    # if tau_exp_saved > 0:
-    #     fit_exp = np.exp(-lags_pos / tau_exp_saved)
-    #     axes[1,0].plot(lags_pos, fit_exp, 'r--', linewidth=2, alpha=0.7, label=f'Exp fit: τ={tau_exp_saved:.2f}ms')
-    # axes[1,0].axhline(1/np.e, color='gray', ls=':', alpha=0.5)
-    # axes[1,0].set_xlabel('Lag (ms)')
-    # axes[1,0].set_ylabel('AC (normalized)')
-    # axes[1,0].set_title(f'Exponential Method (quality={ts_result["quality"]})')
-    # axes[1,0].legend()
-    # axes[1,0].set_xlim(0, 100)
-    # axes[1,0].set_ylim(0, 1.1)
-    # axes[1,0].grid(alpha=0.3)
-    
     # 4. Área integrada
     zero_cross = np.where(corr_pos <= 0.1)[0]
     end_idx = zero_cross[0] if len(zero_cross) > 0 else len(corr_pos)
@@ -509,10 +596,6 @@ def plot_ac_diagnostic(h5_file, sim_key, output_dir):
     plt.show()
     
     logger.info(f"Diagnostic saved: {sim_key}")
-
-
-# In[5]:
-
 
 # =============================================================================
 # FUNCIONES DE GUARDADO
@@ -561,16 +644,25 @@ def save_batch_to_hdf5(batch_results, batch_idx, output_dir):
             for pop, metrics in [('A', res['metrics_A']), ('B', res['metrics_B'])]:
                 if metrics is None:
                     continue
-                    
-                pop_grp = metrics_grp.create_group(pop)
-                pop_grp.attrs['tau_int'] = metrics['tau_int']
-                pop_grp.attrs['ac_peak'] = metrics['ac_peak']
-                pop_grp.attrs['mean_rate'] = metrics['mean_rate']
-                pop_grp.attrs['quality'] = metrics['quality']
                 
-                # Curvas AC
+                pop_grp = metrics_grp.create_group(pop)  
+                pop_grp.attrs['tau_int']       = metrics['tau_int']       # legacy
+                pop_grp.attrs['ac_peak']       = metrics['ac_peak']       # legacy
+                pop_grp.attrs['mean_rate']     = metrics['mean_rate']     # legacy
+                pop_grp.attrs['quality']       = metrics['quality']       # legacy
+                pop_grp.attrs['tau_int_lfp']   = metrics['tau_int_lfp']   # nuevo
+                pop_grp.attrs['freq_dominant'] = metrics['freq_dominant'] # nuevo
+
                 pop_grp.create_dataset('ac_lags', data=metrics['ac_lags'], dtype='float32')
                 pop_grp.create_dataset('ac_corr', data=metrics['ac_corr'], dtype='float32')
+
+                # Solo guardar trazas LFP si están disponibles
+                if not np.isnan(metrics['tau_int_lfp']):
+                    pop_grp.create_dataset('lfp_mean',    data=metrics['lfp_mean'],  dtype='float32', compression='gzip')
+                    pop_grp.create_dataset('psd_freqs',   data=metrics['psd_freqs'], dtype='float32')
+                    pop_grp.create_dataset('psd_power',   data=metrics['psd_power'], dtype='float32')
+                    pop_grp.create_dataset('ac_lags_lfp', data=metrics['ac_lags_lfp'], dtype='float32')
+                    pop_grp.create_dataset('ac_corr_lfp', data=metrics['ac_corr_lfp'], dtype='float32')
 
 
 def update_3d_arrays(batch_results, arrays_3d):
@@ -600,16 +692,20 @@ def update_3d_arrays(batch_results, arrays_3d):
         for pop in ['A', 'B']:
             if len(metrics_dict[pop]) == 0:
                 continue
-            
             trials_data = metrics_dict[pop]
-            tau_ints = [m['tau_int'] for m in trials_data]
-            ac_peaks = [m['ac_peak'] for m in trials_data]
-            rates = [m['mean_rate'] for m in trials_data]
-            
-            arrays_3d[f'tau_int_{pop}'][k_idx, r_idx, d_idx] = np.mean(tau_ints)
-            arrays_3d[f'tau_int_{pop}_std'][k_idx, r_idx, d_idx] = np.std(tau_ints)
-            arrays_3d[f'ac_peak_{pop}'][k_idx, r_idx, d_idx] = np.mean(ac_peaks)
-            arrays_3d[f'mean_rate_{pop}'][k_idx, r_idx, d_idx] = np.mean(rates)
+            tau_ints    = [m['tau_int']        for m in trials_data if m is not None]
+            freqs       = [m['freq_dominant']  for m in trials_data if m is not None]
+            rates       = [m['mean_rate']      for m in trials_data if m is not None]
+
+            # Añadir junto a las otras líneas de actualización dentro del bucle for pop:
+            tau_ints_lfp = [m['tau_int_lfp'] for m in trials_data if m is not None]
+            arrays_3d[f'tau_int_lfp_{pop}'][k_idx, r_idx, d_idx]     = np.nanmean(tau_ints_lfp)
+            arrays_3d[f'tau_int_lfp_{pop}_std'][k_idx, r_idx, d_idx] = np.nanstd(tau_ints_lfp)
+            arrays_3d[f'tau_int_{pop}'][k_idx, r_idx, d_idx]      = np.nanmean(tau_ints)
+            arrays_3d[f'tau_int_{pop}_std'][k_idx, r_idx, d_idx]  = np.nanstd(tau_ints)
+            arrays_3d[f'freq_dominant_{pop}'][k_idx, r_idx, d_idx]     = np.nanmean(freqs)
+            arrays_3d[f'freq_dominant_{pop}_std'][k_idx, r_idx, d_idx] = np.nanstd(freqs)
+            arrays_3d[f'mean_rate_{pop}'][k_idx, r_idx, d_idx]    = np.nanmean(rates)
 
 
 def save_checkpoint(batch_idx, arrays_3d, output_dir):
@@ -619,82 +715,143 @@ def save_checkpoint(batch_idx, arrays_3d, output_dir):
         pickle.dump({'batch_idx': batch_idx, 'arrays_3d': arrays_3d}, f)
     logger.info(f"Checkpoint saved: batch {batch_idx}")
 
-
-# In[6]:
-
-
 # =============================================================================
 # FUNCIONES DE PLOTTING PROGRESIVO
 # =============================================================================
 
-def plot_progress_heatmaps(arrays_3d, delay_idx, output_dir, batch_idx):
-    """Plot 2D heatmaps - SOLO tau_int."""
+# def plot_progress_heatmaps(arrays_3d, delay_idx, output_dir, batch_idx):
+#     """Plot 2D heatmaps - SOLO tau_int."""
     
+#     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+#     delay_val = DELAY_VALUES[delay_idx]
+    
+#     # tau_int A
+#     ax = axes[0]
+#     data = arrays_3d['tau_int_A'][:, :, delay_idx]
+#     im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis',
+#                    extent=[K_INTRA_VALUES[0], K_INTRA_VALUES[-1],
+#                            K_INTER_RATIOS[0], K_INTER_RATIOS[-1]])
+#     ax.set_xlabel('K_intra', fontsize=12)
+#     ax.set_ylabel('K_inter_ratio', fontsize=12)
+#     ax.set_title(f'τ_int Pop A (delay={delay_val}ms)', fontsize=13, weight='bold')
+#     plt.colorbar(im, ax=ax, label='Timescale (ms)')
+    
+#     # tau_int B
+#     ax = axes[1]
+#     data = arrays_3d['tau_int_B'][:, :, delay_idx]
+#     im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis',
+#                    extent=[K_INTRA_VALUES[0], K_INTRA_VALUES[-1],
+#                            K_INTER_RATIOS[0], K_INTER_RATIOS[-1]])
+#     ax.set_xlabel('K_intra', fontsize=12)
+#     ax.set_ylabel('K_inter_ratio', fontsize=12)
+#     ax.set_title(f'τ_int Pop B (delay={delay_val}ms)', fontsize=13, weight='bold')
+#     plt.colorbar(im, ax=ax, label='Timescale (ms)')
+    
+#     plt.suptitle(f'Progress: Batch {batch_idx}', fontsize=15, weight='bold')
+#     plt.tight_layout()
+    
+#     save_path = output_dir / "plots_progress" / f"heatmap_delay{delay_val}ms_batch{batch_idx}.png"
+#     plt.savefig(save_path, dpi=150, bbox_inches='tight')
+#     plt.show()
+    
+#     logger.info(f"Progress plot saved: {save_path.name}")
+
+
+# def plot_kinter_vs_tau(arrays_3d, output_dir):
+#     """Heatmap K_inter_ratio vs Delay."""
+    
+#     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    
+#     for idx, pop in enumerate(['A', 'B']):
+#         ax = axes[idx]
+#         data = np.nanmean(arrays_3d[f'tau_int_{pop}'], axis=0)
+        
+#         im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis',
+#                        extent=[K_INTER_RATIOS[0], K_INTER_RATIOS[-1],
+#                                DELAY_VALUES[0], DELAY_VALUES[-1]])
+#         ax.set_xlabel('K_inter_ratio', fontsize=12, weight='bold')
+#         ax.set_ylabel('Delay (ms)', fontsize=12, weight='bold')
+#         ax.set_title(f'τ_int Pop {pop} (avg over K_intra)', fontsize=13, weight='bold')
+#         plt.colorbar(im, ax=ax, label='Timescale (ms)')
+    
+#     plt.suptitle('K_inter_ratio vs Delay', fontsize=15, weight='bold')
+#     plt.tight_layout()
+    
+#     save_path = output_dir / "kinter_vs_delay_tau.png"
+#     plt.savefig(save_path, dpi=200, bbox_inches='tight')
+#     plt.show()
+    
+#     logger.success(f"K_inter vs tau plot saved")
+
+def plot_progress_heatmaps(arrays_3d, delay_idx, output_dir, batch_idx):
+    """Plot 2D heatmaps de tau_int para un delay dado."""
+
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
     delay_val = DELAY_VALUES[delay_idx]
-    
-    # tau_int A
-    ax = axes[0]
-    data = arrays_3d['tau_int_A'][:, :, delay_idx]
-    im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis',
-                   extent=[K_INTRA_VALUES[0], K_INTRA_VALUES[-1],
-                           K_INTER_RATIOS[0], K_INTER_RATIOS[-1]])
-    ax.set_xlabel('K_intra', fontsize=12)
-    ax.set_ylabel('K_inter_ratio', fontsize=12)
-    ax.set_title(f'τ_int Pop A (delay={delay_val}ms)', fontsize=13, weight='bold')
-    plt.colorbar(im, ax=ax, label='Timescale (ms)')
-    
-    # tau_int B
-    ax = axes[1]
-    data = arrays_3d['tau_int_B'][:, :, delay_idx]
-    im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis',
-                   extent=[K_INTRA_VALUES[0], K_INTRA_VALUES[-1],
-                           K_INTER_RATIOS[0], K_INTER_RATIOS[-1]])
-    ax.set_xlabel('K_intra', fontsize=12)
-    ax.set_ylabel('K_inter_ratio', fontsize=12)
-    ax.set_title(f'τ_int Pop B (delay={delay_val}ms)', fontsize=13, weight='bold')
-    plt.colorbar(im, ax=ax, label='Timescale (ms)')
-    
+
+    n_kintra = len(K_INTRA_VALUES)
+    n_ratio  = len(K_INTER_RATIOS)
+    xticks   = range(n_kintra)
+    yticks   = np.linspace(0, n_ratio - 1, 5).astype(int)
+
+    for ax, pop in zip(axes, ['A', 'B']):
+        data = arrays_3d[f'tau_int_{pop}'][:, :, delay_idx]
+        im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis')
+
+        # Eje X: K_intra (no uniforme → ticks explícitos)
+        ax.set_xticks(xticks)
+        ax.set_xticklabels([f'{v:.2f}' for v in K_INTRA_VALUES],
+                           rotation=45, fontsize=8)
+        # Eje Y: K_inter_ratio (uniforme → linspace de etiquetas)
+        ax.set_yticks(yticks)
+        ax.set_yticklabels([f'{K_INTER_RATIOS[i]:.2f}' for i in yticks])
+
+        ax.set_xlabel('K_intra', fontsize=12)
+        ax.set_ylabel('K_inter_ratio', fontsize=12)
+        ax.set_title(f'τ_int Pop {pop} (delay={delay_val:.1f}ms)',
+                     fontsize=13, weight='bold')
+        plt.colorbar(im, ax=ax, label='Timescale (ms)')
+
     plt.suptitle(f'Progress: Batch {batch_idx}', fontsize=15, weight='bold')
     plt.tight_layout()
-    
-    save_path = output_dir / "plots_progress" / f"heatmap_delay{delay_val}ms_batch{batch_idx}.png"
+
+    save_path = output_dir / "plots_progress" / \
+                f"heatmap_delay{delay_val:.1f}ms_batch{batch_idx}.png"
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    plt.show()
-    
+    plt.close()
     logger.info(f"Progress plot saved: {save_path.name}")
 
 
 def plot_kinter_vs_tau(arrays_3d, output_dir):
-    """Heatmap K_inter_ratio vs Delay."""
-    
+    """Heatmap K_inter_ratio vs Delay (promediado sobre K_intra)."""
+
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-    
-    for idx, pop in enumerate(['A', 'B']):
-        ax = axes[idx]
-        data = np.nanmean(arrays_3d[f'tau_int_{pop}'], axis=0)
-        
-        im = ax.imshow(data.T, origin='lower', aspect='auto', cmap='viridis',
-                       extent=[K_INTER_RATIOS[0], K_INTER_RATIOS[-1],
-                               DELAY_VALUES[0], DELAY_VALUES[-1]])
+
+    n_ratio = len(K_INTER_RATIOS)
+    n_delay = len(DELAY_VALUES)
+    # K_inter_ratio es uniforme → extent directo
+    # Delay es uniforme → extent directo
+    ext = [K_INTER_RATIOS[0], K_INTER_RATIOS[-1],
+           DELAY_VALUES[0],   DELAY_VALUES[-1]]
+
+    for ax, pop in zip(axes, ['A', 'B']):
+        data = np.nanmean(arrays_3d[f'tau_int_{pop}'], axis=0)  # (n_ratio, n_delay)
+        im = ax.imshow(data.T, origin='lower', aspect='auto',
+                       cmap='viridis', extent=ext)
         ax.set_xlabel('K_inter_ratio', fontsize=12, weight='bold')
-        ax.set_ylabel('Delay (ms)', fontsize=12, weight='bold')
-        ax.set_title(f'τ_int Pop {pop} (avg over K_intra)', fontsize=13, weight='bold')
+        ax.set_ylabel('Delay (ms)',    fontsize=12, weight='bold')
+        ax.set_title(f'τ_int Pop {pop} (avg over K_intra)',
+                     fontsize=13, weight='bold')
         plt.colorbar(im, ax=ax, label='Timescale (ms)')
-    
+
     plt.suptitle('K_inter_ratio vs Delay', fontsize=15, weight='bold')
     plt.tight_layout()
-    
+
     save_path = output_dir / "kinter_vs_delay_tau.png"
     plt.savefig(save_path, dpi=200, bbox_inches='tight')
-    plt.show()
-    
+    plt.close()
     logger.success(f"K_inter vs tau plot saved")
-
-
-# In[ ]:
-
-
+    
 # =============================================================================
 # EJECUTAR BARRIDO CON MULTIPROCESSING
 # =============================================================================
@@ -722,7 +879,7 @@ def run_sweep():
     logger.info(f"Total simulations: {n_total_sims}")
     
     # 🛑 FIX 1: Reiniciar workers cada 10 tareas para purgar RAM
-    with Pool(N_JOBS, maxtasksperchild=10) as pool:
+    with Pool(N_JOBS, maxtasksperchild=50) as pool:
         
         pbar = tqdm(total=n_batches, desc="Batches")
         
@@ -778,7 +935,7 @@ def run_sweep():
                 
             # Plot
             if (current_batch_idx + 1) % SIM_CONFIG['plot_every'] == 0:
-                delay_idx_0 = np.where(DELAY_VALUES == 0)[0][0]
+                delay_idx_0 = 0
                 plot_progress_heatmaps(arrays_3d, delay_idx_0, output_dir, current_batch_idx)
                 
             pbar.update(1)
@@ -792,20 +949,10 @@ def run_sweep():
     logger.success("Sweep completed!")
     return arrays_3d
 
-
-
 # EJECUTAR
 arrays_3d = run_sweep()
 
-
-# In[ ]:
-
-
 output_dir
-
-
-# In[ ]:
-
 
 # =============================================================================
 # GUARDAR ARRAYS 3D FINALES
