@@ -200,6 +200,8 @@ class IzhikevichNetwork:
         fixed_common_seed, var_common_seed = self.seed_manager.fixed_seed_common, self.seed_manager._var_base_common
         fixed_pop_seed, var_pop_seed = (self.seed_manager.fixed_seed_A, self.seed_manager._var_base_A) if 'A' in name else (self.seed_manager.fixed_seed_B, self.seed_manager._var_base_B)
         
+        fixed_rng_common = np.random.RandomState(fixed_common_seed)
+        
         fixed_rng_pop = np.random.RandomState(fixed_pop_seed)
         variable_rng_pop = np.random.RandomState(var_pop_seed)
         seed(fixed_pop_seed)
@@ -241,16 +243,15 @@ class IzhikevichNetwork:
         G.I_syn = 0
         
         G.g_exc = 0.0  # adimensional ahora
-        
-        # delay = 1.0
+      
         
         # === ASIGNACIÓN DIFERENCIADA DE TAU_SYN ===
         # Define constantes específicas para cada tipo
-        # tau_syn_exc = 2.0 * ms  # Decay para excitatorias
-        # tau_syn_inh = 5.0 * ms  # Decay para inhibitorias (ejemplo: más lento)
+        # tau_syn_exc = 5.8 * ms  # Decay para excitatorias
+        # tau_syn_inh = 7.3 * ms  # Decay para inhibitorias (ejemplo: más lento)
         
-        tau_syn_exc = 1.5 * ms  # Decay para excitatorias
-        tau_syn_inh = 1.5 * ms  # Decay para inhibitorias (ejemplo: más lento)
+        tau_syn_exc = 2.0 * ms  # Decay para excitatorias
+        tau_syn_inh = 5.0 * ms  # Decay para inhibitorias (ejemplo: más lento)
 
         # Asigna según índice
         G.tau_syn[:Ne] = tau_syn_exc  # Primeras Ne neuronas (excitatorias)
@@ -262,7 +263,6 @@ class IzhikevichNetwork:
         syn_intra = Synapses(G, G, 'w : 1', on_pre='I_syn_post += w')
         syn_intra.connect(condition='i!=j', p=p_intra) 
         # syn_intra.connect(condition='i!=j', p=p_intra) #TODO Evitar conexiones recurrentes? Evitar conexiones recíprocas?
-        syn_intra.delay = delay * ms
         
         n_connections = len(syn_intra.i)
         n_exc_connections = np.sum(syn_intra.i < Ne)
@@ -272,6 +272,10 @@ class IzhikevichNetwork:
         weights[:n_exc_connections] = k_exc * fixed_rng_pop.rand(n_exc_connections)
         weights[n_exc_connections:] = -k_inh * fixed_rng_pop.rand(n_inh_connections)
         syn_intra.w = weights
+        
+        delay = 1.0 # 1.0 * fixed_rng_common.rand(n_connections)
+        
+        syn_intra.delay = delay * ms
         
         seed(var_pop_seed)
         # PoissonInput talámico
@@ -565,8 +569,52 @@ class IzhikevichNetwork:
         
         return syn_inter
     
-    def setup_monitors(self, population_names, record_v_dt=0.5, sample_fraction=0.5, 
-                   monitor_conductance=False, monitor_input=False):
+    # def setup_monitors(self, population_names, record_v_dt=0.5, sample_fraction=0.1, 
+    #                monitor_conductance=False, monitor_input=False):
+    #     for name in population_names:
+    #         if name in self.populations:
+    #             G = self.populations[name]['group']
+    #             Ne, Ni = self.populations[name]['Ne'], self.populations[name]['Ni']
+                
+    #             spike_mon = SpikeMonitor(G)
+                
+    #             current_mon = None
+    #             if monitor_input:
+    #                 current_mon = StateMonitor(G, ['I_syn', 'I_thalamic'], 
+    #                                         record=range(0, min(100, Ne)))
+                
+    #             # Voltage monitor solo si se requiere
+    #             v_mon = None
+    #             sample_indices = np.array([])
+    #             n_exc = 0
+                
+    #             if record_v_dt is not None and sample_fraction > 0:
+    #                 fixed_pop_seed = (self.seed_manager.fixed_seed_A if 'A' in name 
+    #                                 else self.seed_manager.fixed_seed_B)
+    #                 rng_sample = np.random.RandomState(fixed_pop_seed)
+                    
+    #                 n_exc = int(Ne * sample_fraction)
+    #                 n_inh = int(Ni * sample_fraction)
+    #                 sample_exc = rng_sample.choice(Ne, n_exc, replace=False)
+    #                 sample_inh = Ne + rng_sample.choice(Ni, n_inh, replace=False)
+    #                 sample_indices = np.concatenate([sample_exc, sample_inh])
+                    
+    #                 v_mon = StateMonitor(G, 'v', record=sample_indices, dt=record_v_dt*ms)
+                
+    #             self.monitors[name] = {
+    #                 'spikes': spike_mon,
+    #                 'currents': current_mon,
+    #                 'voltage': v_mon,
+    #                 'v_sample_indices': sample_indices,
+    #                 'v_n_exc_sampled': n_exc
+    #             }
+                
+    #             if monitor_conductance:
+    #                 g_mon = StateMonitor(G, 'g_exc', record=[0,1,2], dt=0.1*ms)
+    #                 self.monitors[name]['g_exc_debug'] = g_mon
+    
+    def setup_monitors(self, population_names, record_v_dt=0.5, sample_fraction=0.1, 
+               monitor_conductance=False, monitor_input=False):
         for name in population_names:
             if name in self.populations:
                 G = self.populations[name]['group']
@@ -579,7 +627,6 @@ class IzhikevichNetwork:
                     current_mon = StateMonitor(G, ['I_syn', 'I_thalamic'], 
                                             record=range(0, min(100, Ne)))
                 
-                # Voltage monitor solo si se requiere
                 v_mon = None
                 sample_indices = np.array([])
                 n_exc = 0
@@ -589,11 +636,11 @@ class IzhikevichNetwork:
                                     else self.seed_manager.fixed_seed_B)
                     rng_sample = np.random.RandomState(fixed_pop_seed)
                     
-                    n_exc = int(Ne * sample_fraction)
-                    n_inh = int(Ni * sample_fraction)
-                    sample_exc = rng_sample.choice(Ne, n_exc, replace=False)
-                    sample_inh = Ne + rng_sample.choice(Ni, n_inh, replace=False)
-                    sample_indices = np.concatenate([sample_exc, sample_inh])
+                    # ✅ Solo excitatorias: LFP proxy fisiológicamente correcto
+                    # (neuronas piramidales generan el dipolo extracelular medible)
+                    n_exc = max(1, int(Ne * sample_fraction))
+                    sample_indices = rng_sample.choice(Ne, n_exc, replace=False)
+                    # n_inh y sample_inh eliminados intencionalmente
                     
                     v_mon = StateMonitor(G, 'v', record=sample_indices, dt=record_v_dt*ms)
                 
